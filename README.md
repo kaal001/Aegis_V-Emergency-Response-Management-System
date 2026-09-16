@@ -1,146 +1,147 @@
-# Aegis_V — Emergency Response Management System
+# Emergency Response Management System
+## Java Swing OOP Lab Project
 
-A desktop-based **Emergency Response Management System** built with **Java 26** and **Java Swing**.
+**Team Name:** ArrayOf5  
+**Language:** Java 26  
+**GUI:** Java Swing  
+**Data Storage:** Java Serialization (`.dat` files)  
+**Project Type:** Desktop Management System  
 
-I built this as a practice project to improve my understanding of Java OOP, Swing GUI development, file handling, data persistence, and basic application architecture. Instead of making only a simple CRUD application, I wanted to build a project where different parts of the system are connected through actual rules and workflow.
+---
 
-The basic idea is:
+## 1. Project Overview
 
-```text
-User reports an emergency
-        ↓
-Emergency is created as PENDING
-        ↓
-Admin reviews it
-        ↓
-Required response team is determined
-        ↓
-Available suitable team is assigned
-        ↓
-Emergency becomes ASSIGNED
-        ↓
-Emergency moves to IN_PROGRESS
-        ↓
-Emergency is RESOLVED / CANCELLED
-        ↓
-Assigned team becomes AVAILABLE again
-        ↓
-Dashboard and reports are updated
-```
+The **Emergency Response Management System** is a Java Swing desktop application designed to manage emergency reports and coordinate suitable response teams.
 
+The system provides separate interfaces for normal users and administrators. Users can register, log in, report emergencies, view their reported emergencies, and manage their profiles. Administrators can manage emergencies, response teams, users, assignments, emergency history, and system statistics.
 
-## Features
+The project demonstrates core **Object-Oriented Programming (OOP)** concepts together with Java Swing GUI development, event handling, JTable-based CRUD operations, validation, file handling, and persistent storage.
 
-### User
+The application does **not** use a database, JDBC, web API, or external UI framework. Persistent data is stored using Java Serialization.
 
-- User registration and login
-- Report an emergency
-- Select emergency type and priority
-- Enter detailed location and description
-- View personal emergency records
-- Search and filter personal emergencies
-- View emergency details
+---
 
-### Admin
+## 2. Main Objectives
 
-- Separate admin login
-- Dashboard with system statistics
-- View and manage all emergencies
-- Search and filter emergencies
-- Update emergency priority
-- Update emergency status
-- View emergency details
-- Assign response teams
-- Add, update, and delete response teams
-- Search and filter teams
-- View emergency history
-- View reports and statistics
+The main objectives of the project are:
 
-### Emergency Types
+- Provide a simple interface for reporting emergencies.
+- Classify emergencies by type and priority.
+- Maintain a list of emergency-response teams.
+- Assign suitable and available teams to emergencies.
+- Track emergency and team status.
+- Provide administrator CRUD operations.
+- Store application data persistently.
+- Demonstrate OOP and Java Swing concepts learned in the course.
 
-The system currently supports:
+---
 
-- Medical Emergency
-- Fire Emergency
-- Road Accident
-- Security Emergency
-- Natural Disaster
+## 3. Main Features
 
-The current team mapping is:
+### Authentication
+
+- Separate User and Admin access.
+- User registration.
+- Login validation.
+- Logout confirmation.
+- Exit confirmation.
+
+### User Features
+
+- User dashboard.
+- Report a new emergency.
+- Select emergency type and priority.
+- Enter detailed location and description.
+- View previously reported emergencies.
+- View user profile.
+
+### Admin Features
+
+The Admin Management screen uses a `JTabbedPane` with four tabs:
 
 ```text
-Medical Emergency    → Ambulance Team
-Fire Emergency       → Fire Team
-Road Accident        → Rescue Team
-Security Emergency   → Security Team
-Natural Disaster     → Rescue Team
+Emergencies
+Response Teams
+Users
+Assignments
 ```
 
-### Priority
+Each management tab supports:
 
-Each emergency can be:
+- Add
+- Update
+- Delete
+- Search
+- Input validation
+- Delete confirmation
+- JTable-based data display
 
-- Critical
-- High
-- Medium
-- Low
+Additional admin features include:
 
-Emergency lists are displayed using priority-based sorting:
+- Emergency history
+- Reports and statistics
+- Team assignment
+- Team availability management
+- Emergency status management
+
+---
+
+## 4. Emergency Types
+
+The application supports the following emergency types:
+
+1. Medical Emergency
+2. Fire Emergency
+3. Road Accident
+4. Security Emergency
+5. Natural Disaster
+6. Gas Leak
+7. Electrical Emergency
+8. Building Collapse
+9. Industrial Accident
+10. Missing Person
+11. Water / Flood Emergency
+12. Other / Custom
+
+### Emergency-to-Team Mapping
+
+| Emergency Type | Primary Response Team |
+|---|---|
+| Medical Emergency | Ambulance |
+| Fire Emergency | Fire |
+| Road Accident | Rescue |
+| Security Emergency | Security |
+| Natural Disaster | Rescue |
+| Gas Leak | Fire |
+| Electrical Emergency | Rescue |
+| Building Collapse | Rescue |
+| Industrial Accident | Rescue |
+| Missing Person | Security |
+| Water / Flood Emergency | Rescue |
+| Other / Custom | No fixed primary team |
+
+A team is only assigned when it is both **suitable and available**.
+
+---
+
+## 5. Priority Levels
+
+Every emergency has one of four priority levels:
 
 ```text
-Critical → High → Medium → Low
+Critical
+High
+Medium
+Low
 ```
 
-### Response Teams
+Pending emergencies can be ordered according to priority so higher-priority emergencies can be handled first in assignment-related views.
 
-The response team hierarchy is:
+---
 
-```text
-ResponseTeam
-├── AmbulanceTeam
-├── FireTeam
-├── RescueTeam
-└── SecurityTeam
-```
+## 6. Emergency Status Workflow
 
-Each team contains information such as:
-
-- Team ID
-- Team Name
-- Team Type
-- Contact Number
-- Number of Members
-- Availability
-
-A team can be **Available** or **Busy**.
-
-### Team Assignment
-
-The system first determines the required team type based on the emergency type and then shows suitable teams that are currently available.
-
-Example:
-
-```text
-Road Accident
-      ↓
-Required Team = Rescue
-      ↓
-Find available Rescue Teams
-      ↓
-Admin selects a team
-      ↓
-Assignment is created
-      ↓
-Emergency = ASSIGNED
-      ↓
-Team = BUSY
-```
-
-When an emergency is resolved or cancelled, the assigned team becomes available again.
-
-## Emergency Status Workflow
-
-The main status flow is:
+The system uses the following main status flow:
 
 ```text
 PENDING
@@ -152,29 +153,69 @@ IN_PROGRESS
 RESOLVED
 ```
 
-Cancellation is also supported where appropriate, and the project prevents invalid status transitions.
+An active emergency can also be cancelled according to the implemented status rules.
 
-## Tech Stack
+When a team is assigned:
 
-- **Java 26**
-- **Java Swing**
-- **Java Serialization**
-- **ArrayList**
-- **Enums**
-- **File Handling**
-- **Object-Oriented Programming**
+```text
+Emergency → ASSIGNED
+Team      → BUSY
+```
 
-The project does **not** use a database, JDBC, REST API, or external UI framework.
+When an active assignment is removed through the supported assignment workflow:
 
-## OOP Concepts Used
+```text
+Assignment → Removed
+Emergency  → PENDING
+Team       → AVAILABLE
+```
 
-The project was built to practice core OOP concepts in a complete application.
+The business rules are handled by `EmergencyManager`.
+
+---
+
+## 7. Assignment Management
+
+The **Assignments** tab is a full management tab rather than only an assignment workflow screen.
+
+It supports:
+
+- Add assignment
+- Update assignment
+- Delete assignment
+- Search assignments
+- Assignment ID
+- Emergency ID
+- Team ID
+- Assigned time
+- Notes
+
+### Assignment Validation
+
+A new assignment requires:
+
+1. A valid emergency.
+2. The emergency to be eligible for assignment.
+3. A valid response team.
+4. The team to be available.
+5. The team to be suitable for the emergency.
+6. A valid assigned time.
+
+The GUI communicates with `EmergencyManager` rather than directly changing the core data lists.
+
+---
+
+## 8. OOP Design
+
+The project demonstrates the four major pillars of OOP.
 
 ### Encapsulation
 
-Private fields with getter/setter methods are used to control access to object data.
+Model data is stored in private fields and accessed through methods such as getters and setters.
 
 ### Inheritance
+
+The project contains two main inheritance structures:
 
 ```text
 Person
@@ -182,7 +223,7 @@ Person
 └── Admin
 ```
 
-and:
+and
 
 ```text
 ResponseTeam
@@ -192,380 +233,554 @@ ResponseTeam
 └── SecurityTeam
 ```
 
-### Abstraction
-
-`ResponseTeam` is an abstract class containing common response-team information.
-
 ### Polymorphism
 
-Different response-team subclasses are handled through the common `ResponseTeam` type.
+`ResponseTeam` defines common team behaviour while individual team subclasses override methods such as `respondToEmergency()`.
 
-For example:
+This allows a response team to be treated through a common parent reference while still using team-specific behaviour.
 
-```java
-ArrayList<ResponseTeam>
-```
+### Abstraction
 
-can contain different response-team objects such as `AmbulanceTeam`, `FireTeam`, `RescueTeam`, and `SecurityTeam`.
-
-### Enums
-
-The project uses enums for:
-
-- `EmergencyType`
-- `Priority`
-- `EmergencyStatus`
-- `TeamType`
-
-## Data Persistence
-
-The project uses **Java Serialization** for local data storage.
-
-The main data files are:
-
-```text
-users.dat
-emergencies.dat
-teams.dat
-assignments.dat
-```
-
-The application loads these files when starting and saves updated data when changes are made.
-
-This means data remains available after the application is closed and opened again.
-
-## Main Classes
-
-The project is organized around 12 core classes:
-
-```text
-Person
-User
-Admin
-Emergency
-ResponseTeam
-AmbulanceTeam
-FireTeam
-RescueTeam
-SecurityTeam
-Assignment
-EmergencyManager
-FileManager
-```
-
-### `EmergencyManager`
-
-This is the main business-logic class. It manages:
-
-- Users and admins
-- Emergencies
-- Response teams
-- Assignments
-- Searching and filtering
-- Priority updates
-- Team suitability
-- Team assignment
-- Status changes
-- Statistics
-- Save/load operations
-
-### `FileManager`
-
-Handles Java Serialization and the `.dat` files used for persistent storage.
-
-## GUI
-
-The interface is built entirely with Java Swing.
-
-Main screens include:
-
-```text
-Login
-Registration
-User Dashboard
-Report Emergency
-My Emergencies
-Admin Dashboard
-Emergency Management
-Response Team Management
-Team Assignment
-Emergency History
-Reports / Statistics
-```
-
-The UI uses a custom color theme:
-
-```text
-Alabaster Grey  #CFDBD5
-Soft Linen      #E8EDDF
-Tuscan Sun      #F5CB5C
-Carbon Black    #242423
-Graphite        #333533
-```
-
-## Validation
-
-Basic input validation is implemented throughout the system.
-
-Examples include:
-
-- Required field validation
-- Duplicate User ID checking
-- Duplicate username checking
-- Phone number validation
-- Basic email validation
-- Password length validation
-- Duplicate Team ID checking
-- Team member count validation
-- Emergency location validation
-- Emergency description validation
-
-Some actions are also disabled until a relevant record is selected.
-
-## Project Structure
-
-```text
-src/
-├── Main.java
-│
-├── enums/
-│   ├── EmergencyType.java
-│   ├── Priority.java
-│   ├── EmergencyStatus.java
-│   └── TeamType.java
-│
-├── model/
-│   ├── Person.java
-│   ├── User.java
-│   ├── Admin.java
-│   ├── Emergency.java
-│   ├── ResponseTeam.java
-│   ├── AmbulanceTeam.java
-│   ├── FireTeam.java
-│   ├── RescueTeam.java
-│   ├── SecurityTeam.java
-│   └── Assignment.java
-│
-├── manager/
-│   └── EmergencyManager.java
-│
-├── util/
-│   └── FileManager.java
-│
-└── gui/
-    ├── LoginFrame.java
-    ├── RegistrationFrame.java
-    ├── UserDashboard.java
-    ├── ReportEmergencyFrame.java
-    ├── MyEmergenciesFrame.java
-    ├── AdminDashboard.java
-    ├── EmergencyManagementFrame.java
-    ├── ResponseTeamManagementFrame.java
-    ├── TeamAssignmentFrame.java
-    ├── EmergencyHistoryFrame.java
-    └── ReportStatisticsFrame.java
-```
-
-## Running the Project
-
-### IntelliJ IDEA
-
-1. Open the project in IntelliJ IDEA.
-2. Configure **JDK 26**.
-3. Make sure the project uses the `src` directory correctly.
-4. Run `Main.java`.
-
-### JAR
-
-The project can also be built as an executable JAR.
-
-```bash
-java -jar "Emergency Response Management System.jar"
-```
-
-### Windows Application
-
-The project was also packaged as a standalone Windows application using `jpackage`.
-
-The packaged application can be launched without opening IntelliJ, and the packaged app was tested with the core features and data persistence working after restart.
-
-## Download
-
-### Windows
-
-Download the latest Windows installer from the GitHub Release:
-
-[Download Aegis_V for Windows](../../releases/latest)
-
-> **Note:** This is an unsigned student/portfolio application. Windows SmartScreen may show an "unrecognized app" warning on the first run because the application does not currently have an established publisher reputation.
+`ResponseTeam` is an abstract class containing common response-team data and behaviour.
 
 ---
 
-## Example Workflow
+## 9. Other Java Concepts Demonstrated
 
-A typical flow looks like this:
+The project also demonstrates:
 
-```text
-User Registration
-       ↓
-User Login
-       ↓
-Report Emergency
-       ↓
-Emergency = PENDING
-       ↓
-Admin Login
-       ↓
-Admin Reviews Emergency
-       ↓
-Determine Required Team
-       ↓
-Find Suitable Available Team
-       ↓
-Assign Team
-       ↓
-Emergency = ASSIGNED
-       ↓
-Team = BUSY
-       ↓
-Emergency = IN_PROGRESS
-       ↓
-Emergency = RESOLVED
-       ↓
-Team = AVAILABLE
-```
-
-## What I Learned
-
-This project helped me practice:
-
-- Designing classes around a real-world problem
-- Connecting multiple Java classes together
-- Inheritance, abstraction, polymorphism, and encapsulation
-- Java Swing GUI development
-- Multi-screen desktop applications
+- Default constructors
+- Parameterized constructors
+- Constructor overloading
+- `this`
+- `super`
+- `static`
+- `final`
+- `public`
+- `private`
+- `protected`
 - `ArrayList`
 - Enums
+- String manipulation
+- Conditional statements
+- Loops
+- Methods
 - Exception handling
 - File handling
-- Java Serialization
-- Input validation
-- Search and filtering
-- Business logic
-- Separating business logic from GUI code
-- Testing a complete application workflow
-- Packaging a Java application for Windows
+- Object serialization
 
-One of the main things I learned is that writing individual classes is only part of building an application. The more interesting part is making those classes, rules, GUI screens, and data work together as one system.
+---
 
-## Current Limitations
+## 10. Project Architecture
 
-This is a local desktop practice project, so it has some limitations:
+The project follows a simple separation-of-concerns structure:
 
-- No real database
-- No networking
-- No cloud backend
-- No SMS/email/push notifications
-- No GPS or live map integration
-- No real-time team tracking
-- No multi-user distributed access
-- Basic authentication rather than production-level security
-- Basic reports using numbers and tables
+```text
+GUI
+ ↓
+EmergencyManager
+ ↓
+Model Objects
+ ↓
+FileManager
+ ↓
+.dat Files
+```
 
-## Future Improvements
+### GUI Layer
 
-Some improvements I would like to explore in future versions:
+Responsible for:
 
-- MySQL / PostgreSQL / SQLite integration
-- Stronger authentication and password hashing
-- Role-based access control
-- Web-based version
-- Mobile application
-- GPS and map integration
-- Real-time team tracking
-- SMS/email/push notifications
-- Intelligent team dispatch based on distance and availability
-- Advanced analytics and charts
-- Audit logs
-- Automated backups
-- Better automated testing
+- Displaying information
+- Reading user input
+- Button actions
+- Table interaction
+- Validation messages
+- Navigation
 
+### Manager Layer
 
-## Project Status
+Responsible for:
 
-**Completed as a practice / academic project.**
+- Business rules
+- CRUD logic
+- Searching
+- Team suitability
+- Assignment rules
+- Status changes
+- Statistics
+- Save/load coordination
 
-The main features have been implemented and tested, including:
+### Model Layer
 
-- User and admin workflows
-- Emergency reporting
-- Emergency prioritization
-- Emergency status management
-- Response team management
-- Team assignment
-- Search and filtering
-- Dashboard statistics
-- Reports
-- Emergency history
-- Data persistence
-- Validation
-- Swing GUI
-- Standalone Windows packaging
+Responsible for storing entity data and implementing the OOP structure.
 
-There is still room for improvement, especially around databases, security, networking, real-time communication, GPS, analytics, and multi-user access.
+### Utility Layer
 
-## Why I Built It
+Responsible for file persistence through Java Serialization.
 
-I wanted this project to be more than a basic:
+---
+
+## 11. Project Structure
+
+```text
+Emergency Response Management System/
+│
+├── data/
+│   ├── users.dat
+│   ├── emergencies.dat
+│   ├── teams.dat
+│   └── assignments.dat
+│
+├── installer/
+├── out/
+├── packaged/
+├── release/
+│
+└── src/
+    ├── enums/
+    │   ├── EmergencyStatus.java
+    │   ├── EmergencyType.java
+    │   ├── Priority.java
+    │   └── TeamType.java
+    │
+    ├── gui/
+    │   ├── AdminDashboard.java
+    │   ├── EmergencyHistoryFrame.java
+    │   ├── EmergencyManagementFrame.java
+    │   ├── LoginFrame.java
+    │   ├── MainFrame.java
+    │   ├── ManagementTabbedPanel.java
+    │   ├── MyEmergenciesFrame.java
+    │   ├── RegistrationFrame.java
+    │   ├── ReportEmergencyFrame.java
+    │   ├── ReportStatisticsFrame.java
+    │   ├── ResponseTeamManagementFrame.java
+    │   ├── TeamAssignmentFrame.java
+    │   ├── UserDashboard.java
+    │   └── UserManagementFrame.java
+    │
+    ├── manager/
+    │   └── EmergencyManager.java
+    │
+    ├── model/
+    │   ├── Admin.java
+    │   ├── AmbulanceTeam.java
+    │   ├── Assignment.java
+    │   ├── Emergency.java
+    │   ├── FireTeam.java
+    │   ├── Person.java
+    │   ├── RescueTeam.java
+    │   ├── ResponseTeam.java
+    │   ├── SecurityTeam.java
+    │   └── User.java
+    │
+    ├── util/
+    │   └── FileManager.java
+    │
+    └── Main.java
+```
+
+---
+
+## 12. Class Responsibilities
+
+### Model Classes
+
+**Person.java**  
+Base class for common person information.
+
+**User.java**  
+Represents registered system users.
+
+**Admin.java**  
+Represents administrators and provides admin-related identity information.
+
+**Emergency.java**  
+Stores emergency ID, reporter, type, priority, location, description, date/time, status, and assigned team information.
+
+**ResponseTeam.java**  
+Abstract base class for all response teams.
+
+**AmbulanceTeam.java**  
+Represents ambulance response teams.
+
+**FireTeam.java**  
+Represents fire response teams.
+
+**RescueTeam.java**  
+Represents rescue response teams.
+
+**SecurityTeam.java**  
+Represents security response teams.
+
+**Assignment.java**  
+Stores the relationship between an emergency and a response team, including assignment time and notes.
+
+### Manager Class
+
+**EmergencyManager.java**  
+Central business-logic class. It manages emergencies, users, teams, assignments, searching, validation, status transitions, suitability checks, statistics, and persistence coordination.
+
+### Utility Class
+
+**FileManager.java**  
+Handles reading and writing serialized application data.
+
+### Main Application Classes
+
+**Main.java**  
+Application entry point.
+
+**MainFrame.java**  
+Main Swing window and screen navigation controller using `CardLayout`.
+
+**ManagementTabbedPanel.java**  
+Provides the Admin Management `JTabbedPane`.
+
+---
+
+## 13. Swing Components Used
+
+The project uses standard Java Swing components, including:
+
+- `JFrame`
+- `JPanel`
+- `JLabel`
+- `JTextField`
+- `JTextArea`
+- `JButton`
+- `JTable`
+- `DefaultTableModel`
+- `JScrollPane`
+- `JComboBox`
+- `JTabbedPane`
+- `JOptionPane`
+- `JDialog`
+- `JMenuBar`
+- `JMenu`
+- `JMenuItem`
+
+### GUI Features
+
+- Responsive main window sizing.
+- Card-based navigation.
+- Sidebar navigation.
+- Tab-based management.
+- Read-only JTable cells where appropriate.
+- Search fields.
+- Selection-based update/delete operations.
+- Confirmation dialogs.
+- Informational and warning dialogs.
+- Custom modal `JDialog` for detailed information.
+
+---
+
+## 14. Validation and User Feedback
+
+The application validates data before saving or modifying records.
+
+Examples:
+
+- Empty required fields are rejected.
+- Invalid selections show warning messages.
+- Missing table selection is reported.
+- Invalid team assignment is rejected.
+- Unavailable teams cannot be assigned.
+- Unsuitable teams cannot be assigned.
+- Delete operations require confirmation.
+
+The primary feedback mechanism is `JOptionPane`.
+
+---
+
+## 15. Data Persistence
+
+The project uses **Java Serialization** instead of a database.
+
+The following files are used:
+
+```text
+data/users.dat
+data/emergencies.dat
+data/teams.dat
+data/assignments.dat
+```
+
+This allows data to persist after the application is closed and reopened.
+
+The system can load existing data during startup and save changes after management operations.
+
+---
+
+## 16. Default Demo Data
+
+### Default Admin
+
+```text
+Admin ID : A001
+Name     : System Administrator
+Phone    : 01900000000
+Email    : admin@aegis.com
+Username : admin
+Password : admin123
+```
+
+### Default Teams
+
+```text
+AT-001  Central Ambulance Team   01711111111
+FT-001  Central Fire Team        01722222222
+RT-001  Central Rescue Team      01733333333
+ST-001  Campus Security Team     01744444444
+```
+
+Team records also store:
+
+- Team ID
+- Team Name
+- Team Type
+- Contact Number
+- Number of Members
+- Availability
+
+---
+
+## 17. Admin Management Tabs
+
+### 17.1 Emergencies
+
+Provides:
 
 ```text
 Add
-Edit
+Update
+Delete
+Search
+View Details
+```
+
+Emergency information is displayed in a JTable.
+
+### 17.2 Response Teams
+
+Provides:
+
+```text
+Add
+Update
 Delete
 Search
 ```
 
-management application.
+Team availability is tracked and used during assignment.
 
-The main thing I wanted to practice was how different parts of an application connect through actual rules.
+### 17.3 Users
 
-For example:
+Provides:
 
 ```text
-Emergency Type
-      ↓
-Required Team
-      ↓
-Team Availability
-      ↓
-Assignment
-      ↓
-Emergency Status
-      ↓
-Team Availability
-      ↓
-Dashboard Statistics
-      ↓
-Reports
+Add
+Update
+Delete
+Search
 ```
 
-That connection between different features was the main reason I chose this project for practice.
+### 17.4 Assignments
 
-## Author
+Provides:
 
-**Takbir Rahman**
+```text
+Add
+Update
+Delete
+Search
+```
 
-Computer Science & Engineering student interested in:
+Assignments use actual emergency/team relationships and are subject to the system's business rules.
 
-- Software Engineering
-- AI / Machine Learning
-- Cybersecurity
-- Full-Stack Development
+---
 
-This project is part of my learning journey with Java, Object-Oriented Programming, GUI development, and software project building.
+## 18. User Flow
 
-## License
+```text
+Application Start
+      ↓
+Login
+      ↓
+User Login
+      ↓
+User Dashboard
+      ↓
+Report Emergency
+      ↓
+Enter Details
+      ↓
+Emergency Saved
+      ↓
+My Emergencies / Profile
+```
 
-This project is mainly intended for **learning, practice, and educational purposes**.
+---
 
-You are free to explore the code and use it as a reference for learning.
+## 19. Admin Flow
+
+```text
+Application Start
+      ↓
+Login
+      ↓
+Admin Login
+      ↓
+Admin Dashboard
+      ↓
+Management
+      ├── Emergencies
+      ├── Response Teams
+      ├── Users
+      └── Assignments
+      ↓
+History / Reports
+```
+
+---
+
+## 20. Example Assignment Flow
+
+```text
+Admin opens Assignments
+        ↓
+Selects Add
+        ↓
+Selects eligible emergency
+        ↓
+System finds suitable available teams
+        ↓
+Admin selects a team
+        ↓
+Assignment is created
+        ↓
+Emergency becomes ASSIGNED
+        ↓
+Team becomes BUSY
+        ↓
+Data is saved
+```
+
+This demonstrates interaction between:
+
+```text
+Swing UI
+   ↓
+EmergencyManager
+   ↓
+Emergency + ResponseTeam + Assignment
+   ↓
+FileManager
+   ↓
+Serialized .dat files
+```
+
+---
+
+## 21. Compilation
+
+The project is intended to run with **JDK 26**.
+
+From the project directory:
+
+```bash
+javac -d out src/enums/*.java src/model/*.java src/manager/*.java src/util/*.java src/gui/*.java src/Main.java
+```
+
+---
+
+## 22. Running the Application
+
+After compilation:
+
+```bash
+java -cp out Main
+```
+
+Or from IntelliJ IDEA:
+
+```text
+Run → Main.java
+```
+
+using the configured **Java 26 SDK**.
+
+---
+
+## 23. Demonstration Checklist
+
+For the final demonstration, the recommended sequence is:
+
+1. Start the application.
+2. Show the login screen.
+3. Demonstrate user registration/login.
+4. Report an emergency.
+5. Show the user emergency list.
+6. Log in as administrator.
+7. Open Admin Dashboard.
+8. Open Management.
+9. Demonstrate the four management tabs.
+10. Demonstrate Add, Update, Delete, and Search.
+11. Demonstrate validation warnings.
+12. Demonstrate delete confirmation.
+13. Create an assignment with a suitable available team.
+14. Show emergency/team status changes.
+15. Open Emergency History.
+16. Open Reports/Statistics.
+17. Close and reopen the application to demonstrate persistence.
+
+---
+
+## 24. Team Information
+
+### Team Name
+**ArrayOf5**
+
+### Group Members and Individual Contributions
+
+| Member | Assigned Contribution |
+|---|---|
+| **Takbir** | Core system architecture, overall integration, `EmergencyManager`, assignment logic, persistence integration, and overall testing |
+| **Shuvo** | Emergency management module, emergency CRUD/search, validation, and emergency history |
+| **Ifaz** | Response team management, team CRUD/search, team types, availability, and suitability flow |
+| **Ehsan** | User management, registration/login flow, user CRUD/search, user dashboard, and profile screens |
+| **Suraiya** | Reports/statistics, UI testing, validation/confirmation flows, and documentation support |
+
+---
+
+## 25. Project Summary
+
+The Emergency Response Management System combines:
+
+- Java 26
+- Java Swing
+- Object-Oriented Programming
+- Inheritance
+- Polymorphism
+- Abstraction
+- Encapsulation
+- ArrayList
+- Enums
+- JTable CRUD
+- Search
+- Validation
+- JOptionPane
+- JDialog
+- JTabbedPane
+- JMenuBar
+- CardLayout
+- File handling
+- Java Serialization
+- Persistent `.dat` storage
+
+The final system provides a desktop workflow for reporting emergencies, managing response teams, assigning teams, tracking statuses, viewing history, and generating basic management statistics.
+
+---
+
+**End of README**
