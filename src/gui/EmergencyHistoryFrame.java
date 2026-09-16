@@ -11,8 +11,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class EmergencyHistoryFrame extends JFrame {
+public class EmergencyHistoryFrame extends JPanel {
 
+    private MainFrame mainFrame;
     private EmergencyManager manager;
 
     private JTable historyTable;
@@ -27,22 +28,11 @@ public class EmergencyHistoryFrame extends JFrame {
     private Emergency selectedEmergency;
 
     public EmergencyHistoryFrame(
+            MainFrame mainFrame,
             EmergencyManager manager) {
 
+        this.mainFrame = mainFrame;
         this.manager = manager;
-
-        setTitle(
-                "Emergency History - Emergency Response Management System"
-        );
-
-        setSize(1100, 700);
-
-        setDefaultCloseOperation(
-                JFrame.DISPOSE_ON_CLOSE
-        );
-
-        setLocationRelativeTo(null);
-        setResizable(false);
 
         createUI();
 
@@ -51,12 +41,17 @@ public class EmergencyHistoryFrame extends JFrame {
         );
     }
 
+    // =========================
+    // CREATE UI
+    // =========================
+
     private void createUI() {
 
         JPanel mainPanel =
                 new JPanel(
                         new BorderLayout(
-                                10, 10
+                                10,
+                                10
                         )
                 );
 
@@ -66,12 +61,15 @@ public class EmergencyHistoryFrame extends JFrame {
 
         mainPanel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        15, 15, 15, 15
+                        15,
+                        15,
+                        15,
+                        15
                 )
         );
 
         // =========================
-        // Header
+        // HEADER
         // =========================
 
         JLabel titleLabel =
@@ -94,7 +92,10 @@ public class EmergencyHistoryFrame extends JFrame {
 
         titleLabel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        10, 10, 15, 10
+                        10,
+                        10,
+                        15,
+                        10
                 )
         );
 
@@ -104,13 +105,16 @@ public class EmergencyHistoryFrame extends JFrame {
         );
 
         // =========================
-        // Filter Panel
+        // FILTER PANEL
         // =========================
 
         JPanel filterPanel =
                 new JPanel(
                         new GridLayout(
-                                2, 4, 10, 8
+                                2,
+                                4,
+                                10,
+                                8
                         )
                 );
 
@@ -120,7 +124,10 @@ public class EmergencyHistoryFrame extends JFrame {
 
         filterPanel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        10, 10, 10, 10
+                        10,
+                        10,
+                        10,
+                        10
                 )
         );
 
@@ -144,7 +151,9 @@ public class EmergencyHistoryFrame extends JFrame {
                 EmergencyType.values()) {
 
             typeFilter.addItem(
-                    formatEmergencyType(type)
+                    formatEmergencyType(
+                            type
+                    )
             );
         }
 
@@ -156,7 +165,9 @@ public class EmergencyHistoryFrame extends JFrame {
                 Priority.values()) {
 
             priorityFilter.addItem(
-                    formatPriority(priority)
+                    formatPriority(
+                            priority
+                    )
             );
         }
 
@@ -168,21 +179,34 @@ public class EmergencyHistoryFrame extends JFrame {
                 EmergencyStatus.values()) {
 
             statusFilter.addItem(
-                    formatStatus(status)
+                    formatStatus(
+                            status
+                    )
             );
         }
 
         JButton searchButton =
-                new JButton("SEARCH");
+                new JButton(
+                        "SEARCH"
+                );
 
         JButton clearButton =
-                new JButton("CLEAR");
+                new JButton(
+                        "CLEAR"
+                );
 
-        stylePrimaryButton(searchButton);
-        styleSecondaryButton(clearButton);
+        stylePrimaryButton(
+                searchButton
+        );
+
+        styleSecondaryButton(
+                clearButton
+        );
 
         filterPanel.add(
-                new JLabel("Search:")
+                new JLabel(
+                        "Search:"
+                )
         );
 
         filterPanel.add(
@@ -190,7 +214,9 @@ public class EmergencyHistoryFrame extends JFrame {
         );
 
         filterPanel.add(
-                new JLabel("Type:")
+                new JLabel(
+                        "Type:"
+                )
         );
 
         filterPanel.add(
@@ -198,7 +224,9 @@ public class EmergencyHistoryFrame extends JFrame {
         );
 
         filterPanel.add(
-                new JLabel("Priority:")
+                new JLabel(
+                        "Priority:"
+                )
         );
 
         filterPanel.add(
@@ -206,7 +234,9 @@ public class EmergencyHistoryFrame extends JFrame {
         );
 
         filterPanel.add(
-                new JLabel("Status:")
+                new JLabel(
+                        "Status:"
+                )
         );
 
         filterPanel.add(
@@ -254,7 +284,7 @@ public class EmergencyHistoryFrame extends JFrame {
         );
 
         // =========================
-        // History Table
+        // HISTORY TABLE
         // =========================
 
         String[] columns = {
@@ -284,9 +314,13 @@ public class EmergencyHistoryFrame extends JFrame {
                 };
 
         historyTable =
-                new JTable(tableModel);
+                new JTable(
+                        tableModel
+                );
 
-        historyTable.setRowHeight(28);
+        historyTable.setRowHeight(
+                28
+        );
 
         historyTable.setFont(
                 new Font(
@@ -315,7 +349,7 @@ public class EmergencyHistoryFrame extends JFrame {
                 );
 
         // =========================
-        // Bottom Panel
+        // BUTTON PANEL
         // =========================
 
         JPanel bottomPanel =
@@ -371,13 +405,14 @@ public class EmergencyHistoryFrame extends JFrame {
         );
 
         // =========================
-        // Main Center
+        // CENTER
         // =========================
 
         JPanel centerPanel =
                 new JPanel(
                         new BorderLayout(
-                                10, 10
+                                10,
+                                10
                         )
                 );
 
@@ -406,20 +441,23 @@ public class EmergencyHistoryFrame extends JFrame {
         );
 
         // =========================
-        // Table Selection
+        // TABLE SELECTION
         // =========================
 
         historyTable
                 .getSelectionModel()
-                .addListSelectionListener(e -> {
+                .addListSelectionListener(
+                        e -> {
 
-                    if (!e.getValueIsAdjusting()) {
-                        selectEmergency();
-                    }
-                });
+                            if (!e.getValueIsAdjusting()) {
+
+                                selectEmergency();
+                            }
+                        }
+                );
 
         // =========================
-        // Button Actions
+        // ACTIONS
         // =========================
 
         searchButton.addActionListener(
@@ -441,20 +479,33 @@ public class EmergencyHistoryFrame extends JFrame {
         );
 
         backButton.addActionListener(
-                e -> dispose()
+                e -> mainFrame.goBack()
         );
 
-        add(mainPanel);
+        // =========================
+        // ADD MAIN PANEL
+        // =========================
+
+        setLayout(
+                new BorderLayout()
+        );
+
+        add(
+                mainPanel,
+                BorderLayout.CENTER
+        );
     }
 
     // =========================
-    // Load History
+    // LOAD HISTORY
     // =========================
 
     private void loadHistory(
             ArrayList<Emergency> emergencies) {
 
-        tableModel.setRowCount(0);
+        tableModel.setRowCount(
+                0
+        );
 
         for (Emergency emergency :
                 emergencies) {
@@ -463,7 +514,9 @@ public class EmergencyHistoryFrame extends JFrame {
                     emergency.getAssignedTeamId();
 
             if (assignedTeam == null) {
-                assignedTeam = "Not Assigned";
+
+                assignedTeam =
+                        "Not Assigned";
             }
 
             tableModel.addRow(
@@ -486,11 +539,12 @@ public class EmergencyHistoryFrame extends JFrame {
             );
         }
 
-        selectedEmergency = null;
+        selectedEmergency =
+                null;
     }
 
     // =========================
-    // Select Emergency
+    // SELECT EMERGENCY
     // =========================
 
     private void selectEmergency() {
@@ -499,7 +553,10 @@ public class EmergencyHistoryFrame extends JFrame {
                 historyTable.getSelectedRow();
 
         if (selectedRow == -1) {
-            selectedEmergency = null;
+
+            selectedEmergency =
+                    null;
+
             return;
         }
 
@@ -518,13 +575,14 @@ public class EmergencyHistoryFrame extends JFrame {
     }
 
     // =========================
-    // Search History
+    // SEARCH HISTORY
     // =========================
 
     private void searchHistory() {
 
         String keyword =
-                searchField.getText()
+                searchField
+                        .getText()
                         .trim()
                         .toLowerCase();
 
@@ -554,15 +612,21 @@ public class EmergencyHistoryFrame extends JFrame {
                             || emergency
                             .getEmergencyId()
                             .toLowerCase()
-                            .contains(keyword)
+                            .contains(
+                                    keyword
+                            )
                             || emergency
                             .getLocation()
                             .toLowerCase()
-                            .contains(keyword)
+                            .contains(
+                                    keyword
+                            )
                             || emergency
                             .getReportedBy()
                             .toLowerCase()
-                            .contains(keyword);
+                            .contains(
+                                    keyword
+                            );
 
             boolean typeMatch =
                     selectedType.equals(
@@ -599,26 +663,38 @@ public class EmergencyHistoryFrame extends JFrame {
                     && priorityMatch
                     && statusMatch) {
 
-                result.add(emergency);
+                result.add(
+                        emergency
+                );
             }
         }
 
-        loadHistory(result);
+        loadHistory(
+                result
+        );
     }
 
     // =========================
-    // Clear Filters
+    // CLEAR FILTERS
     // =========================
 
     private void clearFilters() {
 
-        searchField.setText("");
+        searchField.setText(
+                ""
+        );
 
-        typeFilter.setSelectedIndex(0);
+        typeFilter.setSelectedIndex(
+                0
+        );
 
-        priorityFilter.setSelectedIndex(0);
+        priorityFilter.setSelectedIndex(
+                0
+        );
 
-        statusFilter.setSelectedIndex(0);
+        statusFilter.setSelectedIndex(
+                0
+        );
 
         loadHistory(
                 manager.getAllEmergencies()
@@ -626,7 +702,7 @@ public class EmergencyHistoryFrame extends JFrame {
     }
 
     // =========================
-    // View Details
+    // VIEW DETAILS
     // =========================
 
     private void viewDetails() {
@@ -634,7 +710,7 @@ public class EmergencyHistoryFrame extends JFrame {
         if (selectedEmergency == null) {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Please select an emergency first.",
                     "No Selection",
                     JOptionPane.WARNING_MESSAGE
@@ -644,10 +720,13 @@ public class EmergencyHistoryFrame extends JFrame {
         }
 
         String assignedTeam =
-                selectedEmergency.getAssignedTeamId();
+                selectedEmergency
+                        .getAssignedTeamId();
 
         if (assignedTeam == null) {
-            assignedTeam = "Not Assigned";
+
+            assignedTeam =
+                    "Not Assigned";
         }
 
         String details =
@@ -655,45 +734,53 @@ public class EmergencyHistoryFrame extends JFrame {
                         + selectedEmergency
                         .getEmergencyId()
                         + "\n\n"
+
                         + "Reported By: "
                         + selectedEmergency
                         .getReportedBy()
                         + "\n"
+
                         + "Type: "
                         + formatEmergencyType(
                         selectedEmergency
                                 .getType()
                 )
                         + "\n"
+
                         + "Priority: "
                         + formatPriority(
                         selectedEmergency
                                 .getPriority()
                 )
                         + "\n"
+
                         + "Location: "
                         + selectedEmergency
                         .getLocation()
                         + "\n"
+
                         + "Description: "
                         + selectedEmergency
                         .getDescription()
                         + "\n"
+
                         + "Status: "
                         + formatStatus(
                         selectedEmergency
                                 .getStatus()
                 )
                         + "\n"
+
                         + "Assigned Team: "
                         + assignedTeam
                         + "\n"
+
                         + "Date/Time: "
                         + selectedEmergency
                         .getDateTime();
 
         JOptionPane.showMessageDialog(
-                this,
+                mainFrame,
                 details,
                 "Emergency Details",
                 JOptionPane.INFORMATION_MESSAGE
@@ -701,49 +788,84 @@ public class EmergencyHistoryFrame extends JFrame {
     }
 
     // =========================
-    // Formatting
+    // FORMAT TYPE
     // =========================
 
-    private String formatEmergencyType(
-            EmergencyType type) {
+    private String formatEmergencyType(EmergencyType type) {
 
-        if (type == EmergencyType.MEDICAL) {
-            return "Medical Emergency";
+        switch (type) {
 
-        } else if (type == EmergencyType.FIRE) {
-            return "Fire Emergency";
+            case MEDICAL:
+                return "Medical Emergency";
 
-        } else if (type ==
-                EmergencyType.ROAD_ACCIDENT) {
+            case FIRE:
+                return "Fire Emergency";
 
-            return "Road Accident";
+            case ROAD_ACCIDENT:
+                return "Road Accident";
 
-        } else if (type ==
-                EmergencyType.SECURITY) {
+            case SECURITY:
+                return "Security Emergency";
 
-            return "Security Emergency";
+            case NATURAL_DISASTER:
+                return "Natural Disaster";
 
-        } else {
-            return "Natural Disaster";
+            case GAS_LEAK:
+                return "Gas Leak";
+
+            case ELECTRICAL_EMERGENCY:
+                return "Electrical Emergency";
+
+            case BUILDING_COLLAPSE:
+                return "Building Collapse";
+
+            case INDUSTRIAL_ACCIDENT:
+                return "Industrial Accident";
+
+            case MISSING_PERSON:
+                return "Missing Person";
+
+            case WATER_FLOOD_EMERGENCY:
+                return "Water / Flood Emergency";
+
+            case CUSTOM:
+                return "Other / Custom";
+
+            default:
+                return "Unknown";
         }
     }
+    // =========================
+    // FORMAT PRIORITY
+    // =========================
 
     private String formatPriority(
             Priority priority) {
 
-        if (priority == Priority.CRITICAL) {
+        if (priority ==
+                Priority.CRITICAL) {
+
             return "Critical";
 
-        } else if (priority == Priority.HIGH) {
+        } else if (priority ==
+                Priority.HIGH) {
+
             return "High";
 
-        } else if (priority == Priority.MEDIUM) {
+        } else if (priority ==
+                Priority.MEDIUM) {
+
             return "Medium";
 
         } else {
+
             return "Low";
         }
     }
+
+    // =========================
+    // FORMAT STATUS
+    // =========================
 
     private String formatStatus(
             EmergencyStatus status) {
@@ -758,13 +880,15 @@ public class EmergencyHistoryFrame extends JFrame {
 
             return "Assigned";
 
-        } else if (status ==
-                EmergencyStatus.IN_PROGRESS) {
+        } else if (
+                status ==
+                        EmergencyStatus.IN_PROGRESS) {
 
             return "In Progress";
 
-        } else if (status ==
-                EmergencyStatus.RESOLVED) {
+        } else if (
+                status ==
+                        EmergencyStatus.RESOLVED) {
 
             return "Resolved";
 
@@ -775,7 +899,7 @@ public class EmergencyHistoryFrame extends JFrame {
     }
 
     // =========================
-    // Button Styling
+    // PRIMARY BUTTON
     // =========================
 
     private void stylePrimaryButton(
@@ -797,8 +921,14 @@ public class EmergencyHistoryFrame extends JFrame {
                 )
         );
 
-        button.setFocusPainted(false);
+        button.setFocusPainted(
+                false
+        );
     }
+
+    // =========================
+    // SECONDARY BUTTON
+    // =========================
 
     private void styleSecondaryButton(
             JButton button) {
@@ -819,6 +949,8 @@ public class EmergencyHistoryFrame extends JFrame {
                 )
         );
 
-        button.setFocusPainted(false);
+        button.setFocusPainted(
+                false
+        );
     }
 }

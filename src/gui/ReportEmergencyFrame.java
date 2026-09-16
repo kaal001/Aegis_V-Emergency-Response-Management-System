@@ -11,10 +11,13 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ReportEmergencyFrame extends JFrame {
+public class ReportEmergencyFrame extends JPanel {
 
     private EmergencyManager manager;
     private User user;
+
+    private Runnable onBack;
+    private Runnable onSubmitted;
 
     private JComboBox<String> typeComboBox;
     private JComboBox<String> priorityComboBox;
@@ -23,16 +26,22 @@ public class ReportEmergencyFrame extends JFrame {
 
     public ReportEmergencyFrame(
             EmergencyManager manager,
-            User user) {
+            User user,
+            Runnable onBack,
+            Runnable onSubmitted) {
 
         this.manager = manager;
         this.user = user;
+        this.onBack = onBack;
+        this.onSubmitted = onSubmitted;
 
-        setTitle("Report Emergency");
-        setSize(650, 600);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setResizable(false);
+        setLayout(
+                new BorderLayout()
+        );
+
+        setBackground(
+                Color.decode("#E8EDDF")
+        );
 
         createReportUI();
     }
@@ -40,23 +49,39 @@ public class ReportEmergencyFrame extends JFrame {
     private void createReportUI() {
 
         JPanel mainPanel =
-                new JPanel(new BorderLayout());
+                new JPanel(
+                        new BorderLayout()
+                );
 
         mainPanel.setBackground(
                 Color.decode("#E8EDDF")
         );
 
-        // =========================
-        // Header
-        // =========================
-
-        JLabel titleLabel = new JLabel(
-                "REPORT EMERGENCY",
-                SwingConstants.CENTER
+        mainPanel.setBorder(
+                BorderFactory.createEmptyBorder(
+                        20,
+                        25,
+                        20,
+                        25
+                )
         );
 
+        // =========================
+        // HEADER
+        // =========================
+
+        JLabel titleLabel =
+                new JLabel(
+                        "REPORT EMERGENCY",
+                        SwingConstants.CENTER
+                );
+
         titleLabel.setFont(
-                new Font("Arial", Font.BOLD, 24)
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        24
+                )
         );
 
         titleLabel.setForeground(
@@ -65,7 +90,10 @@ public class ReportEmergencyFrame extends JFrame {
 
         titleLabel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        25, 10, 20, 10
+                        5,
+                        10,
+                        20,
+                        10
                 )
         );
 
@@ -75,20 +103,29 @@ public class ReportEmergencyFrame extends JFrame {
         );
 
         // =========================
-        // Form Panel
+        // FORM PANEL
         // =========================
 
-        JPanel formPanel = new JPanel(
-                new GridBagLayout()
-        );
+        JPanel formPanel =
+                new JPanel(
+                        new GridBagLayout()
+                );
 
         formPanel.setBackground(
                 Color.decode("#CFDBD5")
         );
 
         formPanel.setBorder(
-                BorderFactory.createEmptyBorder(
-                        20, 35, 20, 35
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(
+                                Color.decode("#B8C4BE")
+                        ),
+                        BorderFactory.createEmptyBorder(
+                                20,
+                                30,
+                                20,
+                                30
+                        )
                 )
         );
 
@@ -96,7 +133,12 @@ public class ReportEmergencyFrame extends JFrame {
                 new GridBagConstraints();
 
         gbc.insets =
-                new Insets(8, 8, 8, 8);
+                new Insets(
+                        8,
+                        8,
+                        8,
+                        8
+                );
 
         gbc.fill =
                 GridBagConstraints.HORIZONTAL;
@@ -105,22 +147,31 @@ public class ReportEmergencyFrame extends JFrame {
                 GridBagConstraints.WEST;
 
         // =========================
-        // Emergency Type
+        // EMERGENCY TYPE
         // =========================
 
         JLabel typeLabel =
-                new JLabel("Emergency Type:");
-
-        String[] emergencyTypes = {
-                "Medical Emergency",
-                "Fire Emergency",
-                "Road Accident",
-                "Security Emergency",
-                "Natural Disaster"
-        };
+                new JLabel(
+                        "Emergency Type:"
+                );
 
         typeComboBox =
-                new JComboBox<>(emergencyTypes);
+                new JComboBox<>(
+                        new String[]{
+                                "Medical Emergency",
+                                "Fire Emergency",
+                                "Road Accident",
+                                "Security Emergency",
+                                "Natural Disaster",
+                                "Gas Leak",
+                                "Electrical Emergency",
+                                "Building Collapse",
+                                "Industrial Accident",
+                                "Missing Person",
+                                "Water / Flood Emergency",
+                                "Other / Custom"
+                        }
+                );
 
         addFormRow(
                 formPanel,
@@ -131,21 +182,23 @@ public class ReportEmergencyFrame extends JFrame {
         );
 
         // =========================
-        // Priority
+        // PRIORITY
         // =========================
 
         JLabel priorityLabel =
-                new JLabel("Priority:");
-
-        String[] priorities = {
-                "Critical",
-                "High",
-                "Medium",
-                "Low"
-        };
+                new JLabel(
+                        "Priority:"
+                );
 
         priorityComboBox =
-                new JComboBox<>(priorities);
+                new JComboBox<>(
+                        new String[]{
+                                "Critical",
+                                "High",
+                                "Medium",
+                                "Low"
+                        }
+                );
 
         addFormRow(
                 formPanel,
@@ -156,11 +209,13 @@ public class ReportEmergencyFrame extends JFrame {
         );
 
         // =========================
-        // Location
+        // LOCATION
         // =========================
 
         JLabel locationLabel =
-                new JLabel("Location:");
+                new JLabel(
+                        "Location:"
+                );
 
         locationField =
                 new JTextField();
@@ -178,7 +233,7 @@ public class ReportEmergencyFrame extends JFrame {
         );
 
         // =========================
-        // Location Instruction
+        // LOCATION HINT
         // =========================
 
         JLabel locationHint =
@@ -187,7 +242,11 @@ public class ReportEmergencyFrame extends JFrame {
                 );
 
         locationHint.setFont(
-                new Font("Arial", Font.ITALIC, 11)
+                new Font(
+                        "Arial",
+                        Font.ITALIC,
+                        11
+                )
         );
 
         locationHint.setForeground(
@@ -197,6 +256,9 @@ public class ReportEmergencyFrame extends JFrame {
         gbc.gridx = 1;
         gbc.gridy = 3;
         gbc.weightx = 1.0;
+        gbc.weighty = 0.0;
+        gbc.fill =
+                GridBagConstraints.HORIZONTAL;
 
         formPanel.add(
                 locationHint,
@@ -204,24 +266,39 @@ public class ReportEmergencyFrame extends JFrame {
         );
 
         // =========================
-        // Description
+        // DESCRIPTION
         // =========================
 
         JLabel descriptionLabel =
-                new JLabel("Description:");
+                new JLabel(
+                        "Description:"
+                );
 
         descriptionArea =
-                new JTextArea(7, 25);
+                new JTextArea(
+                        7,
+                        25
+                );
 
-        descriptionArea.setLineWrap(true);
-        descriptionArea.setWrapStyleWord(true);
+        descriptionArea.setLineWrap(
+                true
+        );
+
+        descriptionArea.setWrapStyleWord(
+                true
+        );
 
         JScrollPane descriptionScrollPane =
-                new JScrollPane(descriptionArea);
+                new JScrollPane(
+                        descriptionArea
+                );
 
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.weightx = 0;
+        gbc.weighty = 1.0;
+        gbc.fill =
+                GridBagConstraints.BOTH;
 
         formPanel.add(
                 descriptionLabel,
@@ -232,7 +309,8 @@ public class ReportEmergencyFrame extends JFrame {
         gbc.gridy = 4;
         gbc.weightx = 1.0;
         gbc.weighty = 1.0;
-        gbc.fill = GridBagConstraints.BOTH;
+        gbc.fill =
+                GridBagConstraints.BOTH;
 
         formPanel.add(
                 descriptionScrollPane,
@@ -245,7 +323,7 @@ public class ReportEmergencyFrame extends JFrame {
         );
 
         // =========================
-        // Button Panel
+        // BUTTON PANEL
         // =========================
 
         JPanel buttonPanel =
@@ -253,7 +331,7 @@ public class ReportEmergencyFrame extends JFrame {
                         new FlowLayout(
                                 FlowLayout.CENTER,
                                 15,
-                                15
+                                10
                         )
                 );
 
@@ -262,16 +340,30 @@ public class ReportEmergencyFrame extends JFrame {
         );
 
         JButton submitButton =
-                new JButton("SUBMIT EMERGENCY");
+                new JButton(
+                        "SUBMIT EMERGENCY"
+                );
 
         JButton cancelButton =
-                new JButton("CANCEL");
+                new JButton(
+                        "CANCEL"
+                );
 
-        stylePrimaryButton(submitButton);
-        styleSecondaryButton(cancelButton);
+        stylePrimaryButton(
+                submitButton
+        );
 
-        buttonPanel.add(submitButton);
-        buttonPanel.add(cancelButton);
+        styleSecondaryButton(
+                cancelButton
+        );
+
+        buttonPanel.add(
+                submitButton
+        );
+
+        buttonPanel.add(
+                cancelButton
+        );
 
         mainPanel.add(
                 buttonPanel,
@@ -279,7 +371,7 @@ public class ReportEmergencyFrame extends JFrame {
         );
 
         // =========================
-        // Button Actions
+        // BUTTON ACTIONS
         // =========================
 
         submitButton.addActionListener(
@@ -287,14 +379,23 @@ public class ReportEmergencyFrame extends JFrame {
         );
 
         cancelButton.addActionListener(
-                e -> dispose()
+                e -> {
+
+                    if (onBack != null) {
+
+                        onBack.run();
+                    }
+                }
         );
 
-        add(mainPanel);
+        add(
+                mainPanel,
+                BorderLayout.CENTER
+        );
     }
 
     // =========================
-    // Add Form Row
+    // ADD FORM ROW
     // =========================
 
     private void addFormRow(
@@ -307,27 +408,45 @@ public class ReportEmergencyFrame extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = row;
         gbc.weightx = 0;
+        gbc.weighty = 0;
+        gbc.fill =
+                GridBagConstraints.HORIZONTAL;
 
-        panel.add(label, gbc);
+        panel.add(
+                label,
+                gbc
+        );
 
         gbc.gridx = 1;
         gbc.gridy = row;
         gbc.weightx = 1.0;
+        gbc.weighty = 0;
 
-        panel.add(component, gbc);
+        panel.add(
+                component,
+                gbc
+        );
     }
 
     // =========================
-    // Submit Emergency
+    // SUBMIT EMERGENCY
     // =========================
 
     private void submitEmergency() {
 
         String location =
-                locationField.getText().trim();
+                locationField
+                        .getText()
+                        .trim();
 
         String description =
-                descriptionArea.getText().trim();
+                descriptionArea
+                        .getText()
+                        .trim();
+
+        // =========================
+        // VALIDATION
+        // =========================
 
         if (location.isEmpty()) {
 
@@ -357,23 +476,45 @@ public class ReportEmergencyFrame extends JFrame {
             return;
         }
 
+        // =========================
+        // GET TYPE / PRIORITY
+        // =========================
+
         EmergencyType type =
                 convertEmergencyType(
-                        typeComboBox.getSelectedItem().toString()
+                        typeComboBox
+                                .getSelectedItem()
+                                .toString()
                 );
 
         Priority priority =
                 convertPriority(
-                        priorityComboBox.getSelectedItem().toString()
+                        priorityComboBox
+                                .getSelectedItem()
+                                .toString()
                 );
+
+        // =========================
+        // GENERATE ID
+        // =========================
 
         String emergencyId =
                 generateEmergencyId();
 
+        // =========================
+        // DATE / TIME
+        // =========================
+
         String dateTime =
                 new SimpleDateFormat(
                         "yyyy-MM-dd HH:mm"
-                ).format(new Date());
+                ).format(
+                        new Date()
+                );
+
+        // =========================
+        // CREATE EMERGENCY
+        // =========================
 
         Emergency emergency =
                 new Emergency(
@@ -386,84 +527,192 @@ public class ReportEmergencyFrame extends JFrame {
                         dateTime
                 );
 
-        manager.addEmergency(emergency);
+        // =========================
+        // ADD TO MANAGER
+        // =========================
+
+        boolean added =
+                manager.addEmergency(
+                        emergency
+                );
+
+        if (!added) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Unable to report this emergency.\n"
+                            + "Please try again.",
+                    "Report Failed",
+                    JOptionPane.ERROR_MESSAGE
+            );
+
+            return;
+        }
+
+        // =========================
+        // SAVE DATA
+        // =========================
 
         manager.saveData();
+
+        // =========================
+        // SUCCESS MESSAGE
+        // =========================
 
         JOptionPane.showMessageDialog(
                 this,
                 "Emergency reported successfully.\n\n"
-                        + "Emergency ID: " + emergencyId
-                        + "\nStatus: " + emergency.getStatus(),
+                        + "Emergency ID: "
+                        + emergencyId
+                        + "\nStatus: "
+                        + emergency.getStatus(),
                 "Report Successful",
                 JOptionPane.INFORMATION_MESSAGE
         );
 
-        dispose();
-    }
+        // =========================
+        // CALLBACK
+        // =========================
 
-    // =========================
-    // Generate Emergency ID
-    // =========================
+        if (onSubmitted != null) {
 
-    private String generateEmergencyId() {
+            onSubmitted.run();
 
-        int nextNumber =
-                manager.getEmergencies().size() + 1001;
+        } else if (onBack != null) {
 
-        return "ER-" + nextNumber;
-    }
-
-    // =========================
-    // Convert Emergency Type
-    // =========================
-
-    private EmergencyType convertEmergencyType(
-            String type) {
-
-        if (type.equals("Medical Emergency")) {
-            return EmergencyType.MEDICAL;
-
-        } else if (type.equals("Fire Emergency")) {
-            return EmergencyType.FIRE;
-
-        } else if (type.equals("Road Accident")) {
-            return EmergencyType.ROAD_ACCIDENT;
-
-        } else if (type.equals("Security Emergency")) {
-            return EmergencyType.SECURITY;
-
-        } else {
-            return EmergencyType.NATURAL_DISASTER;
+            onBack.run();
         }
     }
 
     // =========================
-    // Convert Priority
+    // GENERATE EMERGENCY ID
+    // =========================
+
+    private String generateEmergencyId() {
+
+        int highestNumber = 1000;
+
+        for (Emergency emergency :
+                manager.getEmergencies()) {
+
+            String emergencyId =
+                    emergency.getEmergencyId();
+
+            if (emergencyId == null) {
+                continue;
+            }
+
+            if (emergencyId.startsWith("ER-")) {
+
+                try {
+
+                    int number =
+                            Integer.parseInt(
+                                    emergencyId.substring(3)
+                            );
+
+                    if (number > highestNumber) {
+
+                        highestNumber = number;
+                    }
+
+                } catch (
+                        NumberFormatException e) {
+
+                    // Ignore invalid emergency IDs
+                }
+            }
+        }
+
+        return "ER-" + (highestNumber + 1);
+    }
+
+    // =========================
+    // CONVERT TYPE
+    // =========================
+
+    private EmergencyType convertEmergencyType(String type) {
+
+        switch (type) {
+
+            case "Medical Emergency":
+                return EmergencyType.MEDICAL;
+
+            case "Fire Emergency":
+                return EmergencyType.FIRE;
+
+            case "Road Accident":
+                return EmergencyType.ROAD_ACCIDENT;
+
+            case "Security Emergency":
+                return EmergencyType.SECURITY;
+
+            case "Natural Disaster":
+                return EmergencyType.NATURAL_DISASTER;
+
+            case "Gas Leak":
+                return EmergencyType.GAS_LEAK;
+
+            case "Electrical Emergency":
+                return EmergencyType.ELECTRICAL_EMERGENCY;
+
+            case "Building Collapse":
+                return EmergencyType.BUILDING_COLLAPSE;
+
+            case "Industrial Accident":
+                return EmergencyType.INDUSTRIAL_ACCIDENT;
+
+            case "Missing Person":
+                return EmergencyType.MISSING_PERSON;
+
+            case "Water / Flood Emergency":
+                return EmergencyType.WATER_FLOOD_EMERGENCY;
+
+            case "Other / Custom":
+                return EmergencyType.CUSTOM;
+
+            default:
+                return EmergencyType.CUSTOM;
+        }
+    }
+
+    // =========================
+    // CONVERT PRIORITY
     // =========================
 
     private Priority convertPriority(
             String priority) {
 
-        if (priority.equals("Critical")) {
+        if (priority.equals(
+                "Critical"
+        )) {
+
             return Priority.CRITICAL;
 
-        } else if (priority.equals("High")) {
+        } else if (
+                priority.equals("High")
+        ) {
+
             return Priority.HIGH;
 
-        } else if (priority.equals("Medium")) {
+        } else if (
+                priority.equals("Medium")
+        ) {
+
             return Priority.MEDIUM;
 
         } else {
+
             return Priority.LOW;
         }
     }
 
     // =========================
-    // Button Styling
+    // PRIMARY BUTTON
     // =========================
 
-    private void stylePrimaryButton(JButton button) {
+    private void stylePrimaryButton(
+            JButton button) {
 
         button.setBackground(
                 Color.decode("#F5CB5C")
@@ -474,24 +723,43 @@ public class ReportEmergencyFrame extends JFrame {
         );
 
         button.setFont(
-                new Font("Arial", Font.BOLD, 14)
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        14
+                )
         );
 
-        button.setFocusPainted(false);
+        button.setFocusPainted(
+                false
+        );
     }
 
-    private void styleSecondaryButton(JButton button) {
+    // =========================
+    // SECONDARY BUTTON
+    // =========================
+
+    private void styleSecondaryButton(
+            JButton button) {
 
         button.setBackground(
                 Color.decode("#333533")
         );
 
-        button.setForeground(Color.WHITE);
-
-        button.setFont(
-                new Font("Arial", Font.BOLD, 14)
+        button.setForeground(
+                Color.WHITE
         );
 
-        button.setFocusPainted(false);
+        button.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        14
+                )
+        );
+
+        button.setFocusPainted(
+                false
+        );
     }
 }

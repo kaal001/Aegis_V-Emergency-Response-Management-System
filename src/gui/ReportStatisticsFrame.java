@@ -12,8 +12,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class ReportStatisticsFrame extends JFrame {
+public class ReportStatisticsFrame extends JPanel {
 
+    private MainFrame mainFrame;
     private EmergencyManager manager;
 
     private JLabel totalLabel;
@@ -28,31 +29,31 @@ public class ReportStatisticsFrame extends JFrame {
     private DefaultTableModel statusTableModel;
     private DefaultTableModel teamTableModel;
 
-    public ReportStatisticsFrame(EmergencyManager manager) {
+    public ReportStatisticsFrame(
+            MainFrame mainFrame,
+            EmergencyManager manager) {
 
+        this.mainFrame = mainFrame;
         this.manager = manager;
 
-        setTitle(
-                "Reports & Statistics - Emergency Response Management System"
-        );
-
-        setSize(1000, 720);
-
-        setDefaultCloseOperation(
-                JFrame.DISPOSE_ON_CLOSE
-        );
-
-        setLocationRelativeTo(null);
-        setResizable(false);
-
         createUI();
+
         refreshReports();
     }
+
+    // =========================================
+    // CREATE UI
+    // =========================================
 
     private void createUI() {
 
         JPanel mainPanel =
-                new JPanel(new BorderLayout(10, 10));
+                new JPanel(
+                        new BorderLayout(
+                                10,
+                                10
+                        )
+                );
 
         mainPanel.setBackground(
                 Color.decode("#E8EDDF")
@@ -60,7 +61,10 @@ public class ReportStatisticsFrame extends JFrame {
 
         mainPanel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        15, 15, 15, 15
+                        15,
+                        15,
+                        15,
+                        15
                 )
         );
 
@@ -88,7 +92,10 @@ public class ReportStatisticsFrame extends JFrame {
 
         titleLabel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        5, 5, 10, 5
+                        5,
+                        5,
+                        10,
+                        5
                 )
         );
 
@@ -98,11 +105,16 @@ public class ReportStatisticsFrame extends JFrame {
         );
 
         // =========================================
-        // CONTENT PANEL
+        // CONTENT
         // =========================================
 
         JPanel contentPanel =
-                new JPanel(new BorderLayout(10, 10));
+                new JPanel(
+                        new BorderLayout(
+                                10,
+                                10
+                        )
+                );
 
         contentPanel.setBackground(
                 Color.decode("#E8EDDF")
@@ -115,7 +127,10 @@ public class ReportStatisticsFrame extends JFrame {
         JPanel summaryPanel =
                 new JPanel(
                         new GridLayout(
-                                1, 6, 10, 10
+                                1,
+                                6,
+                                10,
+                                10
                         )
                 );
 
@@ -123,12 +138,23 @@ public class ReportStatisticsFrame extends JFrame {
                 Color.decode("#E8EDDF")
         );
 
-        totalLabel = createValueLabel("0");
-        criticalLabel = createValueLabel("0");
-        pendingLabel = createValueLabel("0");
-        resolvedLabel = createValueLabel("0");
-        availableTeamLabel = createValueLabel("0");
-        busyTeamLabel = createValueLabel("0");
+        totalLabel =
+                createValueLabel("0");
+
+        criticalLabel =
+                createValueLabel("0");
+
+        pendingLabel =
+                createValueLabel("0");
+
+        resolvedLabel =
+                createValueLabel("0");
+
+        availableTeamLabel =
+                createValueLabel("0");
+
+        busyTeamLabel =
+                createValueLabel("0");
 
         summaryPanel.add(
                 createSummaryCard(
@@ -178,13 +204,16 @@ public class ReportStatisticsFrame extends JFrame {
         );
 
         // =========================================
-        // TABLE PANEL
+        // TABLES
         // =========================================
 
         JPanel tablesPanel =
                 new JPanel(
                         new GridLayout(
-                                2, 2, 10, 10
+                                2,
+                                2,
+                                10,
+                                10
                         )
                 );
 
@@ -204,6 +233,7 @@ public class ReportStatisticsFrame extends JFrame {
                         },
                         0
                 ) {
+
                     @Override
                     public boolean isCellEditable(
                             int row,
@@ -214,7 +244,9 @@ public class ReportStatisticsFrame extends JFrame {
                 };
 
         JTable typeTable =
-                createTable(typeTableModel);
+                createTable(
+                        typeTableModel
+                );
 
         tablesPanel.add(
                 createTablePanel(
@@ -235,6 +267,7 @@ public class ReportStatisticsFrame extends JFrame {
                         },
                         0
                 ) {
+
                     @Override
                     public boolean isCellEditable(
                             int row,
@@ -245,7 +278,9 @@ public class ReportStatisticsFrame extends JFrame {
                 };
 
         JTable priorityTable =
-                createTable(priorityTableModel);
+                createTable(
+                        priorityTableModel
+                );
 
         tablesPanel.add(
                 createTablePanel(
@@ -266,6 +301,7 @@ public class ReportStatisticsFrame extends JFrame {
                         },
                         0
                 ) {
+
                     @Override
                     public boolean isCellEditable(
                             int row,
@@ -276,7 +312,9 @@ public class ReportStatisticsFrame extends JFrame {
                 };
 
         JTable statusTable =
-                createTable(statusTableModel);
+                createTable(
+                        statusTableModel
+                );
 
         tablesPanel.add(
                 createTablePanel(
@@ -299,6 +337,7 @@ public class ReportStatisticsFrame extends JFrame {
                         },
                         0
                 ) {
+
                     @Override
                     public boolean isCellEditable(
                             int row,
@@ -309,7 +348,9 @@ public class ReportStatisticsFrame extends JFrame {
                 };
 
         JTable teamTable =
-                createTable(teamTableModel);
+                createTable(
+                        teamTableModel
+                );
 
         tablesPanel.add(
                 createTablePanel(
@@ -346,10 +387,14 @@ public class ReportStatisticsFrame extends JFrame {
         );
 
         JButton refreshButton =
-                new JButton("REFRESH");
+                new JButton(
+                        "REFRESH"
+                );
 
         JButton backButton =
-                new JButton("BACK");
+                new JButton(
+                        "BACK"
+                );
 
         stylePrimaryButton(
                 refreshButton
@@ -359,8 +404,13 @@ public class ReportStatisticsFrame extends JFrame {
                 backButton
         );
 
-        buttonPanel.add(refreshButton);
-        buttonPanel.add(backButton);
+        buttonPanel.add(
+                refreshButton
+        );
+
+        buttonPanel.add(
+                backButton
+        );
 
         mainPanel.add(
                 buttonPanel,
@@ -376,10 +426,21 @@ public class ReportStatisticsFrame extends JFrame {
         );
 
         backButton.addActionListener(
-                e -> dispose()
+                e -> mainFrame.goBack()
         );
 
-        add(mainPanel);
+        // =========================================
+        // ADD MAIN PANEL
+        // =========================================
+
+        setLayout(
+                new BorderLayout()
+        );
+
+        add(
+                mainPanel,
+                BorderLayout.CENTER
+        );
     }
 
     // =========================================
@@ -448,24 +509,32 @@ public class ReportStatisticsFrame extends JFrame {
 
     private void updateTypeTable() {
 
-        typeTableModel.setRowCount(0);
+        typeTableModel.setRowCount(
+                0
+        );
 
         EmergencyType[] types =
                 EmergencyType.values();
 
-        for (int i = 0; i < types.length; i++) {
+        for (int i = 0;
+             i < types.length;
+             i++) {
 
             EmergencyType type =
                     types[i];
 
             int count =
                     manager
-                            .getEmergenciesByType(type)
+                            .getEmergenciesByType(
+                                    type
+                            )
                             .size();
 
             typeTableModel.addRow(
                     new Object[]{
-                            formatEmergencyType(type),
+                            formatEmergencyType(
+                                    type
+                            ),
                             count
                     }
             );
@@ -478,7 +547,9 @@ public class ReportStatisticsFrame extends JFrame {
 
     private void updatePriorityTable() {
 
-        priorityTableModel.setRowCount(0);
+        priorityTableModel.setRowCount(
+                0
+        );
 
         Priority[] priorities =
                 Priority.values();
@@ -499,7 +570,9 @@ public class ReportStatisticsFrame extends JFrame {
 
             priorityTableModel.addRow(
                     new Object[]{
-                            formatPriority(priority),
+                            formatPriority(
+                                    priority
+                            ),
                             count
                     }
             );
@@ -512,7 +585,9 @@ public class ReportStatisticsFrame extends JFrame {
 
     private void updateStatusTable() {
 
-        statusTableModel.setRowCount(0);
+        statusTableModel.setRowCount(
+                0
+        );
 
         EmergencyStatus[] statuses =
                 EmergencyStatus.values();
@@ -533,7 +608,9 @@ public class ReportStatisticsFrame extends JFrame {
 
             statusTableModel.addRow(
                     new Object[]{
-                            formatStatus(status),
+                            formatStatus(
+                                    status
+                            ),
                             count
                     }
             );
@@ -546,7 +623,9 @@ public class ReportStatisticsFrame extends JFrame {
 
     private void updateTeamTable() {
 
-        teamTableModel.setRowCount(0);
+        teamTableModel.setRowCount(
+                0
+        );
 
         ArrayList<ResponseTeam> teams =
                 manager.getAllTeams();
@@ -561,9 +640,14 @@ public class ReportStatisticsFrame extends JFrame {
             String availability;
 
             if (team.isAvailable()) {
-                availability = "Available";
+
+                availability =
+                        "Available";
+
             } else {
-                availability = "Busy";
+
+                availability =
+                        "Busy";
             }
 
             teamTableModel.addRow(
@@ -587,9 +671,13 @@ public class ReportStatisticsFrame extends JFrame {
             DefaultTableModel model) {
 
         JTable table =
-                new JTable(model);
+                new JTable(
+                        model
+                );
 
-        table.setRowHeight(26);
+        table.setRowHeight(
+                26
+        );
 
         table.setFont(
                 new Font(
@@ -638,7 +726,10 @@ public class ReportStatisticsFrame extends JFrame {
                                 Color.decode("#333533")
                         ),
                         BorderFactory.createEmptyBorder(
-                                7, 7, 7, 7
+                                7,
+                                7,
+                                7,
+                                7
                         )
                 )
         );
@@ -663,7 +754,10 @@ public class ReportStatisticsFrame extends JFrame {
 
         titleLabel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        2, 2, 7, 2
+                        2,
+                        2,
+                        7,
+                        2
                 )
         );
 
@@ -673,7 +767,9 @@ public class ReportStatisticsFrame extends JFrame {
         );
 
         JScrollPane scrollPane =
-                new JScrollPane(table);
+                new JScrollPane(
+                        table
+                );
 
         panel.add(
                 scrollPane,
@@ -706,7 +802,10 @@ public class ReportStatisticsFrame extends JFrame {
                                 Color.decode("#333533")
                         ),
                         BorderFactory.createEmptyBorder(
-                                7, 7, 7, 7
+                                7,
+                                7,
+                                7,
+                                7
                         )
                 )
         );
@@ -742,6 +841,10 @@ public class ReportStatisticsFrame extends JFrame {
         return card;
     }
 
+    // =========================================
+    // VALUE LABEL
+    // =========================================
+
     private JLabel createValueLabel(
             String value) {
 
@@ -767,33 +870,53 @@ public class ReportStatisticsFrame extends JFrame {
     }
 
     // =========================================
-    // FORMAT EMERGENCY TYPE
+    // FORMAT TYPE
     // =========================================
 
-    private String formatEmergencyType(
-            EmergencyType type) {
+    private String formatEmergencyType(EmergencyType type) {
 
-        if (type == EmergencyType.MEDICAL) {
-            return "Medical Emergency";
+        switch (type) {
 
-        } else if (type == EmergencyType.FIRE) {
-            return "Fire Emergency";
+            case MEDICAL:
+                return "Medical Emergency";
 
-        } else if (
-                type == EmergencyType.ROAD_ACCIDENT) {
+            case FIRE:
+                return "Fire Emergency";
 
-            return "Road Accident";
+            case ROAD_ACCIDENT:
+                return "Road Accident";
 
-        } else if (
-                type == EmergencyType.SECURITY) {
+            case SECURITY:
+                return "Security Emergency";
 
-            return "Security Emergency";
+            case NATURAL_DISASTER:
+                return "Natural Disaster";
 
-        } else {
-            return "Natural Disaster";
+            case GAS_LEAK:
+                return "Gas Leak";
+
+            case ELECTRICAL_EMERGENCY:
+                return "Electrical Emergency";
+
+            case BUILDING_COLLAPSE:
+                return "Building Collapse";
+
+            case INDUSTRIAL_ACCIDENT:
+                return "Industrial Accident";
+
+            case MISSING_PERSON:
+                return "Missing Person";
+
+            case WATER_FLOOD_EMERGENCY:
+                return "Water / Flood Emergency";
+
+            case CUSTOM:
+                return "Other / Custom";
+
+            default:
+                return "Unknown";
         }
     }
-
     // =========================================
     // FORMAT PRIORITY
     // =========================================
@@ -801,16 +924,23 @@ public class ReportStatisticsFrame extends JFrame {
     private String formatPriority(
             Priority priority) {
 
-        if (priority == Priority.CRITICAL) {
+        if (priority ==
+                Priority.CRITICAL) {
+
             return "Critical";
 
-        } else if (priority == Priority.HIGH) {
+        } else if (priority ==
+                Priority.HIGH) {
+
             return "High";
 
-        } else if (priority == Priority.MEDIUM) {
+        } else if (priority ==
+                Priority.MEDIUM) {
+
             return "Medium";
 
         } else {
+
             return "Low";
         }
     }
@@ -827,22 +957,26 @@ public class ReportStatisticsFrame extends JFrame {
 
             return "Pending";
 
-        } else if (status ==
-                EmergencyStatus.ASSIGNED) {
+        } else if (
+                status ==
+                        EmergencyStatus.ASSIGNED) {
 
             return "Assigned";
 
-        } else if (status ==
-                EmergencyStatus.IN_PROGRESS) {
+        } else if (
+                status ==
+                        EmergencyStatus.IN_PROGRESS) {
 
             return "In Progress";
 
-        } else if (status ==
-                EmergencyStatus.RESOLVED) {
+        } else if (
+                status ==
+                        EmergencyStatus.RESOLVED) {
 
             return "Resolved";
 
         } else {
+
             return "Cancelled";
         }
     }
@@ -854,16 +988,23 @@ public class ReportStatisticsFrame extends JFrame {
     private String formatTeamType(
             TeamType type) {
 
-        if (type == TeamType.AMBULANCE) {
+        if (type ==
+                TeamType.AMBULANCE) {
+
             return "Ambulance";
 
-        } else if (type == TeamType.FIRE) {
+        } else if (type ==
+                TeamType.FIRE) {
+
             return "Fire";
 
-        } else if (type == TeamType.RESCUE) {
+        } else if (type ==
+                TeamType.RESCUE) {
+
             return "Rescue";
 
         } else {
+
             return "Security";
         }
     }
@@ -891,7 +1032,9 @@ public class ReportStatisticsFrame extends JFrame {
                 )
         );
 
-        button.setFocusPainted(false);
+        button.setFocusPainted(
+                false
+        );
     }
 
     // =========================================
@@ -917,6 +1060,8 @@ public class ReportStatisticsFrame extends JFrame {
                 )
         );
 
-        button.setFocusPainted(false);
+        button.setFocusPainted(
+                false
+        );
     }
 }

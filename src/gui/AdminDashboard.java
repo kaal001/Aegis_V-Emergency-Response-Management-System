@@ -12,8 +12,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class AdminDashboard extends JFrame {
+public class AdminDashboard extends JPanel {
 
+    private MainFrame mainFrame;
     private EmergencyManager manager;
     private Admin admin;
 
@@ -30,44 +31,38 @@ public class AdminDashboard extends JFrame {
     private JTable emergencyTable;
 
     public AdminDashboard(
+            MainFrame mainFrame,
             EmergencyManager manager,
             Admin admin) {
 
+        this.mainFrame = mainFrame;
         this.manager = manager;
         this.admin = admin;
-
-        setTitle(
-                "Admin Dashboard - Emergency Response Management System"
-        );
-
-        setSize(1000, 700);
-
-        setDefaultCloseOperation(
-                JFrame.EXIT_ON_CLOSE
-        );
-
-        setLocationRelativeTo(null);
-        setResizable(false);
 
         createDashboardUI();
         refreshDashboard();
     }
 
+    // =========================================
+    // CREATE DASHBOARD UI
+    // =========================================
+
     private void createDashboardUI() {
 
-        JPanel mainPanel =
-                new JPanel(new BorderLayout());
+        setLayout(new BorderLayout());
 
-        mainPanel.setBackground(
+        setBackground(
                 Color.decode("#E8EDDF")
         );
 
-        // =========================
-        // Header
-        // =========================
+        // =========================================
+        // HEADER
+        // =========================================
 
         JPanel headerPanel =
-                new JPanel(new BorderLayout());
+                new JPanel(
+                        new BorderLayout()
+                );
 
         headerPanel.setBackground(
                 Color.decode("#242423")
@@ -92,14 +87,36 @@ public class AdminDashboard extends JFrame {
 
         titleLabel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        18, 25, 18, 10
+                        18,
+                        25,
+                        18,
+                        10
                 )
         );
 
+        // =========================================
+        // HEADER RIGHT SIDE
+        // =========================================
+
+        JPanel headerRightPanel =
+                new JPanel(
+                        new FlowLayout(
+                                FlowLayout.RIGHT,
+                                12,
+                                12
+                        )
+                );
+
+        headerRightPanel.setOpaque(false);
+
+        JButton refreshButton =
+                new JButton("REFRESH");
+
+        styleRefreshButton(refreshButton);
+
         JLabel adminLabel =
                 new JLabel(
-                        "Admin: " + admin.getName(),
-                        SwingConstants.RIGHT
+                        "Admin: " + admin.getName()
                 );
 
         adminLabel.setFont(
@@ -114,10 +131,16 @@ public class AdminDashboard extends JFrame {
                 Color.decode("#F5CB5C")
         );
 
-        adminLabel.setBorder(
-                BorderFactory.createEmptyBorder(
-                        18, 10, 18, 25
-                )
+        refreshButton.addActionListener(
+                e -> refreshDashboard()
+        );
+
+        headerRightPanel.add(
+                refreshButton
+        );
+
+        headerRightPanel.add(
+                adminLabel
         );
 
         headerPanel.add(
@@ -126,44 +149,291 @@ public class AdminDashboard extends JFrame {
         );
 
         headerPanel.add(
-                adminLabel,
+                headerRightPanel,
                 BorderLayout.EAST
         );
 
-        mainPanel.add(
+        add(
                 headerPanel,
                 BorderLayout.NORTH
         );
 
-        // =========================
-        // Center
-        // =========================
+        // =========================================
+        // MAIN AREA
+        // =========================================
 
-        JPanel centerPanel =
+        JPanel mainArea =
                 new JPanel(
-                        new BorderLayout(
-                                15, 15
-                        )
+                        new BorderLayout()
                 );
 
-        centerPanel.setBackground(
+        mainArea.setBackground(
                 Color.decode("#E8EDDF")
         );
 
-        centerPanel.setBorder(
-                BorderFactory.createEmptyBorder(
-                        20, 25, 10, 25
+        // =========================================
+        // LEFT SIDEBAR
+        // =========================================
+
+        JPanel sidebarPanel =
+                new JPanel();
+
+        sidebarPanel.setLayout(
+                new BoxLayout(
+                        sidebarPanel,
+                        BoxLayout.Y_AXIS
                 )
         );
 
-        // =========================
-        // Statistics
-        // =========================
+        sidebarPanel.setBackground(
+                Color.decode("#333533")
+        );
+
+        sidebarPanel.setBorder(
+                BorderFactory.createEmptyBorder(
+                        20,
+                        10,
+                        20,
+                        10
+                )
+        );
+
+        sidebarPanel.setPreferredSize(
+                new Dimension(
+                        190,
+                        0
+                )
+        );
+
+        // Sidebar title
+        JLabel menuTitle =
+                new JLabel(
+                        "ADMIN MENU"
+                );
+
+        menuTitle.setAlignmentX(
+                Component.CENTER_ALIGNMENT
+        );
+
+        menuTitle.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        15
+                )
+        );
+
+        menuTitle.setForeground(
+                Color.decode("#F5CB5C")
+        );
+
+        menuTitle.setBorder(
+                BorderFactory.createEmptyBorder(
+                        0,
+                        0,
+                        20,
+                        0
+                )
+        );
+
+        sidebarPanel.add(
+                menuTitle
+        );
+
+        // =========================================
+        // DASHBOARD BUTTON
+        // =========================================
+
+        JButton dashboardButton =
+                createSidebarButton(
+                        "DASHBOARD"
+                );
+
+        dashboardButton.addActionListener(
+                e -> refreshDashboard()
+        );
+
+        sidebarPanel.add(
+                dashboardButton
+        );
+
+        sidebarPanel.add(
+                Box.createVerticalStrut(10)
+        );
+
+        // =========================================
+        // MANAGEMENT BUTTON
+        // =========================================
+
+        JButton managementButton =
+                createSidebarButton(
+                        "MANAGEMENT"
+                );
+
+        managementButton.addActionListener(
+                e -> openManagement()
+        );
+
+        sidebarPanel.add(
+                managementButton
+        );
+
+        sidebarPanel.add(
+                Box.createVerticalStrut(10)
+        );
+
+        // =========================================
+        // HISTORY BUTTON
+        // =========================================
+
+        JButton historyButton =
+                createSidebarButton(
+                        "HISTORY"
+                );
+
+        historyButton.addActionListener(
+                e -> openHistory()
+        );
+
+        sidebarPanel.add(
+                historyButton
+        );
+
+        sidebarPanel.add(
+                Box.createVerticalStrut(10)
+        );
+
+        // =========================================
+        // REPORTS BUTTON
+        // =========================================
+
+        JButton reportsButton =
+                createSidebarButton(
+                        "REPORTS"
+                );
+
+        reportsButton.addActionListener(
+                e -> openReports()
+        );
+
+        sidebarPanel.add(
+                reportsButton
+        );
+
+        // Push logout to bottom
+        sidebarPanel.add(
+                Box.createVerticalGlue()
+        );
+
+        // =========================================
+        // LOGOUT BUTTON
+        // =========================================
+
+        JButton logoutButton =
+                createSidebarLogoutButton(
+                        "LOGOUT"
+                );
+
+        logoutButton.addActionListener(
+                e -> logout()
+        );
+
+        sidebarPanel.add(
+                logoutButton
+        );
+
+        mainArea.add(
+                sidebarPanel,
+                BorderLayout.WEST
+        );
+
+        // =========================================
+        // RIGHT CONTENT AREA
+        // =========================================
+
+        JPanel contentPanel =
+                new JPanel(
+                        new BorderLayout(
+                                15,
+                                15
+                        )
+                );
+
+        contentPanel.setBackground(
+                Color.decode("#E8EDDF")
+        );
+
+        contentPanel.setBorder(
+                BorderFactory.createEmptyBorder(
+                        20,
+                        20,
+                        20,
+                        25
+                )
+        );
+
+        // =========================================
+        // CONTENT TITLE
+        // =========================================
+
+        JLabel dashboardTitle =
+                new JLabel(
+                        "ADMIN DASHBOARD"
+                );
+
+        dashboardTitle.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        20
+                )
+        );
+
+        dashboardTitle.setForeground(
+                Color.decode("#242423")
+        );
+
+        dashboardTitle.setBorder(
+                BorderFactory.createEmptyBorder(
+                        0,
+                        0,
+                        8,
+                        0
+                )
+        );
+
+        contentPanel.add(
+                dashboardTitle,
+                BorderLayout.NORTH
+        );
+
+        // =========================================
+        // CENTER CONTENT
+        // =========================================
+
+        JPanel centerContent =
+                new JPanel(
+                        new BorderLayout(
+                                15,
+                                15
+                        )
+                );
+
+        centerContent.setBackground(
+                Color.decode("#E8EDDF")
+        );
+
+        // =========================================
+        // STATISTICS
+        // =========================================
 
         JPanel statisticsPanel =
                 new JPanel(
                         new GridLayout(
-                                2, 4, 12, 12
+                                2,
+                                4,
+                                12,
+                                12
                         )
                 );
 
@@ -171,14 +441,29 @@ public class AdminDashboard extends JFrame {
                 Color.decode("#E8EDDF")
         );
 
-        totalLabel = createStatLabel("0");
-        pendingLabel = createStatLabel("0");
-        criticalLabel = createStatLabel("0");
-        inProgressLabel = createStatLabel("0");
-        resolvedLabel = createStatLabel("0");
-        unassignedLabel = createStatLabel("0");
-        availableTeamLabel = createStatLabel("0");
-        busyTeamLabel = createStatLabel("0");
+        totalLabel =
+                createStatLabel("0");
+
+        pendingLabel =
+                createStatLabel("0");
+
+        criticalLabel =
+                createStatLabel("0");
+
+        inProgressLabel =
+                createStatLabel("0");
+
+        resolvedLabel =
+                createStatLabel("0");
+
+        unassignedLabel =
+                createStatLabel("0");
+
+        availableTeamLabel =
+                createStatLabel("0");
+
+        busyTeamLabel =
+                createStatLabel("0");
 
         statisticsPanel.add(
                 createStatCard(
@@ -236,14 +521,14 @@ public class AdminDashboard extends JFrame {
                 )
         );
 
-        centerPanel.add(
+        centerContent.add(
                 statisticsPanel,
                 BorderLayout.NORTH
         );
 
-        // =========================
-        // Recent Emergencies
-        // =========================
+        // =========================================
+        // RECENT EMERGENCIES
+        // =========================================
 
         JPanel recentPanel =
                 new JPanel(
@@ -273,7 +558,10 @@ public class AdminDashboard extends JFrame {
 
         recentTitle.setBorder(
                 BorderFactory.createEmptyBorder(
-                        10, 0, 10, 0
+                        5,
+                        0,
+                        8,
+                        0
                 )
         );
 
@@ -307,9 +595,13 @@ public class AdminDashboard extends JFrame {
                 };
 
         emergencyTable =
-                new JTable(tableModel);
+                new JTable(
+                        tableModel
+                );
 
-        emergencyTable.setRowHeight(28);
+        emergencyTable.setRowHeight(
+                28
+        );
 
         emergencyTable.setFont(
                 new Font(
@@ -342,156 +634,252 @@ public class AdminDashboard extends JFrame {
                 BorderLayout.CENTER
         );
 
-        centerPanel.add(
+        centerContent.add(
                 recentPanel,
                 BorderLayout.CENTER
         );
 
-        mainPanel.add(
-                centerPanel,
+        contentPanel.add(
+                centerContent,
                 BorderLayout.CENTER
         );
 
-        // =========================
-        // Bottom Buttons
-        // =========================
-
-        JPanel buttonPanel =
-                new JPanel(
-                        new FlowLayout(
-                                FlowLayout.CENTER,
-                                12,
-                                12
-                        )
-                );
-
-        buttonPanel.setBackground(
-                Color.decode("#E8EDDF")
+        mainArea.add(
+                contentPanel,
+                BorderLayout.CENTER
         );
 
-        JButton refreshButton =
-                new JButton("REFRESH");
-
-        JButton emergenciesButton =
-                new JButton("EMERGENCIES");
-
-        JButton teamsButton =
-                new JButton("RESPONSE TEAMS");
-
-        JButton historyButton =
-                new JButton("HISTORY");
-
-        JButton reportsButton =
-                new JButton("REPORTS");
-
-        JButton logoutButton =
-                new JButton("LOGOUT");
-
-        stylePrimaryButton(refreshButton);
-        stylePrimaryButton(emergenciesButton);
-        stylePrimaryButton(teamsButton);
-        stylePrimaryButton(historyButton);
-        stylePrimaryButton(reportsButton);
-
-        styleLogoutButton(logoutButton);
-
-        buttonPanel.add(refreshButton);
-        buttonPanel.add(emergenciesButton);
-        buttonPanel.add(teamsButton);
-        buttonPanel.add(historyButton);
-        buttonPanel.add(reportsButton);
-        buttonPanel.add(logoutButton);
-
-        mainPanel.add(
-                buttonPanel,
-                BorderLayout.SOUTH
+        add(
+                mainArea,
+                BorderLayout.CENTER
         );
-
-        // =========================
-        // Actions
-        // =========================
-
-        refreshButton.addActionListener(
-                e -> refreshDashboard()
-        );
-
-        emergenciesButton.addActionListener(
-                e -> openEmergencyManagement()
-        );
-
-        teamsButton.addActionListener(
-                e -> openTeamManagement()
-        );
-
-        historyButton.addActionListener(
-                e -> openHistory()
-        );
-
-        reportsButton.addActionListener(
-                e -> openReports()
-        );
-
-        logoutButton.addActionListener(
-                e -> logout()
-        );
-
-        add(mainPanel);
     }
 
-    // =========================
-    // Navigation
-    // =========================
+    // =========================================
+    // MANAGEMENT
+    // =========================================
 
-    private void openEmergencyManagement() {
+    private void openManagement() {
 
-        EmergencyManagementFrame frame =
-                new EmergencyManagementFrame(
+        ManagementTabbedPanel managementPanel =
+                new ManagementTabbedPanel(
+                        mainFrame,
                         manager
                 );
 
-        frame.setVisible(true);
+        mainFrame.addScreen(
+                "MANAGEMENT",
+                managementPanel
+        );
+
+        mainFrame.showScreen(
+                "MANAGEMENT"
+        );
     }
 
-    private void openTeamManagement() {
-
-        ResponseTeamManagementFrame frame =
-                new ResponseTeamManagementFrame(
-                        manager
-                );
-
-        frame.setVisible(true);
-    }
+    // =========================================
+    // HISTORY
+    // =========================================
 
     private void openHistory() {
 
-        EmergencyHistoryFrame frame =
+        EmergencyHistoryFrame historyFrame =
                 new EmergencyHistoryFrame(
+                        mainFrame,
                         manager
                 );
 
-        frame.setVisible(true);
+        mainFrame.addScreen(
+                "EMERGENCY_HISTORY",
+                historyFrame
+        );
+
+        mainFrame.showScreen(
+                "EMERGENCY_HISTORY"
+        );
     }
+
+    // =========================================
+    // REPORTS
+    // =========================================
 
     private void openReports() {
 
-        ReportStatisticsFrame frame =
+        ReportStatisticsFrame reportsFrame =
                 new ReportStatisticsFrame(
+                        mainFrame,
                         manager
                 );
 
-        frame.setVisible(true);
+        mainFrame.addScreen(
+                "REPORT_STATISTICS",
+                reportsFrame
+        );
+
+        mainFrame.showScreen(
+                "REPORT_STATISTICS"
+        );
     }
 
-    // =========================
-    // Statistics Card
-    // =========================
+    // =========================================
+    // SIDEBAR BUTTON
+    // =========================================
+
+    private JButton createSidebarButton(
+            String text) {
+
+        JButton button =
+                new JButton(
+                        text
+                );
+
+        button.setMaximumSize(
+                new Dimension(
+                        170,
+                        42
+                )
+        );
+
+        button.setAlignmentX(
+                Component.CENTER_ALIGNMENT
+        );
+
+        button.setBackground(
+                Color.decode("#F5CB5C")
+        );
+
+        button.setForeground(
+                Color.decode("#242423")
+        );
+
+        button.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        12
+                )
+        );
+
+        button.setFocusPainted(
+                false
+        );
+
+        button.setBorder(
+                BorderFactory.createEmptyBorder(
+                        8,
+                        10,
+                        8,
+                        10
+                )
+        );
+
+        return button;
+    }
+
+    // =========================================
+    // SIDEBAR LOGOUT BUTTON
+    // =========================================
+
+    private JButton createSidebarLogoutButton(
+            String text) {
+
+        JButton button =
+                new JButton(
+                        text
+                );
+
+        button.setMaximumSize(
+                new Dimension(
+                        170,
+                        42
+                )
+        );
+
+        button.setAlignmentX(
+                Component.CENTER_ALIGNMENT
+        );
+
+        button.setBackground(
+                Color.decode("#242423")
+        );
+
+        button.setForeground(
+                Color.WHITE
+        );
+
+        button.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        12
+                )
+        );
+
+        button.setFocusPainted(
+                false
+        );
+
+        button.setBorder(
+                BorderFactory.createEmptyBorder(
+                        8,
+                        10,
+                        8,
+                        10
+                )
+        );
+
+        return button;
+    }
+
+    // =========================================
+    // REFRESH BUTTON
+    // =========================================
+
+    private void styleRefreshButton(
+            JButton button) {
+
+        button.setBackground(
+                Color.decode("#F5CB5C")
+        );
+
+        button.setForeground(
+                Color.decode("#242423")
+        );
+
+        button.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        11
+                )
+        );
+
+        button.setFocusPainted(
+                false
+        );
+
+        button.setBorder(
+                BorderFactory.createEmptyBorder(
+                        8,
+                        14,
+                        8,
+                        14
+                )
+        );
+    }
+
+    // =========================================
+    // STAT CARD
+    // =========================================
 
     private JPanel createStatCard(
             String title,
             JLabel valueLabel) {
 
         JPanel card =
-                new JPanel(new BorderLayout());
+                new JPanel(
+                        new BorderLayout()
+                );
 
         card.setBackground(
                 Color.decode("#CFDBD5")
@@ -503,7 +891,10 @@ public class AdminDashboard extends JFrame {
                                 Color.decode("#333533")
                         ),
                         BorderFactory.createEmptyBorder(
-                                10, 10, 10, 10
+                                10,
+                                10,
+                                10,
+                                10
                         )
                 )
         );
@@ -539,6 +930,10 @@ public class AdminDashboard extends JFrame {
         return card;
     }
 
+    // =========================================
+    // STAT LABEL
+    // =========================================
+
     private JLabel createStatLabel(
             String value) {
 
@@ -563,9 +958,9 @@ public class AdminDashboard extends JFrame {
         return label;
     }
 
-    // =========================
-    // Refresh Dashboard
-    // =========================
+    // =========================================
+    // REFRESH DASHBOARD DATA
+    // =========================================
 
     private void refreshDashboard() {
 
@@ -620,13 +1015,15 @@ public class AdminDashboard extends JFrame {
         loadRecentEmergencies();
     }
 
-    // =========================
-    // Recent Emergencies
-    // =========================
+    // =========================================
+    // RECENT EMERGENCIES
+    // =========================================
 
     private void loadRecentEmergencies() {
 
-        tableModel.setRowCount(0);
+        tableModel.setRowCount(
+                0
+        );
 
         ArrayList<Emergency> emergencies =
                 manager.getAllEmergencies();
@@ -648,7 +1045,9 @@ public class AdminDashboard extends JFrame {
                     emergency.getAssignedTeamId();
 
             if (assignedTeam == null) {
-                assignedTeam = "Not Assigned";
+
+                assignedTeam =
+                        "Not Assigned";
             }
 
             tableModel.addRow(
@@ -670,26 +1069,32 @@ public class AdminDashboard extends JFrame {
         }
     }
 
-    // =========================
-    // Formatting
-    // =========================
+    // =========================================
+    // FORMAT TYPE
+    // =========================================
 
     private String formatEmergencyType(
             EmergencyType type) {
 
-        if (type == EmergencyType.MEDICAL) {
+        if (type ==
+                EmergencyType.MEDICAL) {
+
             return "Medical Emergency";
 
-        } else if (type == EmergencyType.FIRE) {
+        } else if (type ==
+                EmergencyType.FIRE) {
+
             return "Fire Emergency";
 
-        } else if (type ==
-                EmergencyType.ROAD_ACCIDENT) {
+        } else if (
+                type ==
+                        EmergencyType.ROAD_ACCIDENT) {
 
             return "Road Accident";
 
-        } else if (type ==
-                EmergencyType.SECURITY) {
+        } else if (
+                type ==
+                        EmergencyType.SECURITY) {
 
             return "Security Emergency";
 
@@ -699,16 +1104,28 @@ public class AdminDashboard extends JFrame {
         }
     }
 
+    // =========================================
+    // FORMAT PRIORITY
+    // =========================================
+
     private String formatPriority(
             Priority priority) {
 
-        if (priority == Priority.CRITICAL) {
+        if (priority ==
+                Priority.CRITICAL) {
+
             return "Critical";
 
-        } else if (priority == Priority.HIGH) {
+        } else if (
+                priority ==
+                        Priority.HIGH) {
+
             return "High";
 
-        } else if (priority == Priority.MEDIUM) {
+        } else if (
+                priority ==
+                        Priority.MEDIUM) {
+
             return "Medium";
 
         } else {
@@ -716,6 +1133,10 @@ public class AdminDashboard extends JFrame {
             return "Low";
         }
     }
+
+    // =========================================
+    // FORMAT STATUS
+    // =========================================
 
     private String formatStatus(
             EmergencyStatus status) {
@@ -725,18 +1146,21 @@ public class AdminDashboard extends JFrame {
 
             return "Pending";
 
-        } else if (status ==
-                EmergencyStatus.ASSIGNED) {
+        } else if (
+                status ==
+                        EmergencyStatus.ASSIGNED) {
 
             return "Assigned";
 
-        } else if (status ==
-                EmergencyStatus.IN_PROGRESS) {
+        } else if (
+                status ==
+                        EmergencyStatus.IN_PROGRESS) {
 
             return "In Progress";
 
-        } else if (status ==
-                EmergencyStatus.RESOLVED) {
+        } else if (
+                status ==
+                        EmergencyStatus.RESOLVED) {
 
             return "Resolved";
 
@@ -746,76 +1170,28 @@ public class AdminDashboard extends JFrame {
         }
     }
 
-    // =========================
-    // Button Styling
-    // =========================
-
-    private void stylePrimaryButton(
-            JButton button) {
-
-        button.setBackground(
-                Color.decode("#F5CB5C")
-        );
-
-        button.setForeground(
-                Color.decode("#242423")
-        );
-
-        button.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        12
-                )
-        );
-
-        button.setFocusPainted(false);
-    }
-
-    private void styleLogoutButton(
-            JButton button) {
-
-        button.setBackground(
-                Color.decode("#333533")
-        );
-
-        button.setForeground(
-                Color.WHITE
-        );
-
-        button.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        12
-                )
-        );
-
-        button.setFocusPainted(false);
-    }
-
-    // =========================
-    // Logout
-    // =========================
+    // =========================================
+    // LOGOUT
+    // =========================================
 
     private void logout() {
 
         int choice =
                 JOptionPane.showConfirmDialog(
-                        this,
+                        mainFrame,
                         "Are you sure you want to logout?",
                         "Logout",
                         JOptionPane.YES_NO_OPTION
                 );
 
-        if (choice == JOptionPane.YES_OPTION) {
+        if (choice ==
+                JOptionPane.YES_OPTION) {
 
-            dispose();
+            mainFrame.clearNavigationHistory();
 
-            LoginFrame loginFrame =
-                    new LoginFrame(manager);
-
-            loginFrame.setVisible(true);
+            mainFrame.showScreen(
+                    "LOGIN"
+            );
         }
     }
 }

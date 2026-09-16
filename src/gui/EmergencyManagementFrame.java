@@ -11,8 +11,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class EmergencyManagementFrame extends JFrame {
+public class EmergencyManagementFrame extends JPanel {
 
+    private MainFrame mainFrame;
     private EmergencyManager manager;
 
     private JTable emergencyTable;
@@ -29,30 +30,14 @@ public class EmergencyManagementFrame extends JFrame {
 
     private JLabel selectedEmergencyLabel;
 
-    private JButton updatePriorityButton;
-    private JButton updateStatusButton;
-    private JButton viewDetailsButton;
-    private JButton assignTeamButton;
-
     private Emergency selectedEmergency;
 
     public EmergencyManagementFrame(
+            MainFrame mainFrame,
             EmergencyManager manager) {
 
+        this.mainFrame = mainFrame;
         this.manager = manager;
-
-        setTitle(
-                "Emergency Management - Emergency Response Management System"
-        );
-
-        setSize(1100, 700);
-
-        setDefaultCloseOperation(
-                JFrame.DISPOSE_ON_CLOSE
-        );
-
-        setLocationRelativeTo(null);
-        setResizable(false);
 
         createUI();
 
@@ -61,12 +46,17 @@ public class EmergencyManagementFrame extends JFrame {
         );
     }
 
+    // =========================
+    // CREATE UI
+    // =========================
+
     private void createUI() {
 
         JPanel mainPanel =
                 new JPanel(
                         new BorderLayout(
-                                10, 10
+                                10,
+                                10
                         )
                 );
 
@@ -76,12 +66,15 @@ public class EmergencyManagementFrame extends JFrame {
 
         mainPanel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        15, 15, 15, 15
+                        15,
+                        15,
+                        15,
+                        15
                 )
         );
 
         // =========================
-        // Header
+        // HEADER
         // =========================
 
         JLabel titleLabel =
@@ -104,7 +97,10 @@ public class EmergencyManagementFrame extends JFrame {
 
         titleLabel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        10, 10, 15, 10
+                        10,
+                        10,
+                        15,
+                        10
                 )
         );
 
@@ -114,13 +110,16 @@ public class EmergencyManagementFrame extends JFrame {
         );
 
         // =========================
-        // Filter Panel
+        // FILTER PANEL
         // =========================
 
         JPanel filterPanel =
                 new JPanel(
                         new GridLayout(
-                                2, 4, 10, 8
+                                2,
+                                4,
+                                10,
+                                8
                         )
                 );
 
@@ -130,7 +129,10 @@ public class EmergencyManagementFrame extends JFrame {
 
         filterPanel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        10, 10, 10, 10
+                        10,
+                        10,
+                        10,
+                        10
                 )
         );
 
@@ -146,7 +148,9 @@ public class EmergencyManagementFrame extends JFrame {
         statusFilter =
                 new JComboBox<>();
 
-        typeFilter.addItem("All Types");
+        typeFilter.addItem(
+                "All Types"
+        );
 
         for (EmergencyType type :
                 EmergencyType.values()) {
@@ -180,15 +184,6 @@ public class EmergencyManagementFrame extends JFrame {
             );
         }
 
-        JButton searchButton =
-                new JButton("SEARCH");
-
-        JButton clearButton =
-                new JButton("CLEAR");
-
-        stylePrimaryButton(searchButton);
-        styleSecondaryButton(clearButton);
-
         filterPanel.add(
                 new JLabel("Search:")
         );
@@ -219,6 +214,24 @@ public class EmergencyManagementFrame extends JFrame {
 
         filterPanel.add(
                 statusFilter
+        );
+
+        JButton searchButton =
+                new JButton(
+                        "SEARCH"
+                );
+
+        JButton clearButton =
+                new JButton(
+                        "CLEAR"
+                );
+
+        stylePrimaryButton(
+                searchButton
+        );
+
+        styleSecondaryButton(
+                clearButton
         );
 
         JPanel filterWrapper =
@@ -262,7 +275,7 @@ public class EmergencyManagementFrame extends JFrame {
         );
 
         // =========================
-        // Table
+        // TABLE
         // =========================
 
         String[] columns = {
@@ -291,9 +304,13 @@ public class EmergencyManagementFrame extends JFrame {
                 };
 
         emergencyTable =
-                new JTable(tableModel);
+                new JTable(
+                        tableModel
+                );
 
-        emergencyTable.setRowHeight(28);
+        emergencyTable.setRowHeight(
+                28
+        );
 
         emergencyTable.setFont(
                 new Font(
@@ -322,13 +339,14 @@ public class EmergencyManagementFrame extends JFrame {
                 );
 
         // =========================
-        // Selection Panel
+        // SELECTION PANEL
         // =========================
 
         JPanel selectionPanel =
                 new JPanel(
                         new BorderLayout(
-                                10, 10
+                                10,
+                                10
                         )
                 );
 
@@ -338,7 +356,10 @@ public class EmergencyManagementFrame extends JFrame {
 
         selectionPanel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        10, 10, 10, 10
+                        10,
+                        10,
+                        10,
+                        10
                 )
         );
 
@@ -399,28 +420,35 @@ public class EmergencyManagementFrame extends JFrame {
             );
         }
 
-        updatePriorityButton =
+        JButton updatePriorityButton =
                 new JButton(
                         "UPDATE PRIORITY"
                 );
 
-        updateStatusButton =
+        JButton updateStatusButton =
                 new JButton(
                         "UPDATE STATUS"
                 );
 
-        viewDetailsButton =
+        JButton viewDetailsButton =
                 new JButton(
                         "VIEW DETAILS"
                 );
 
-        assignTeamButton =
+        JButton assignTeamButton =
                 new JButton(
                         "ASSIGN TEAM"
                 );
 
+        JButton deleteButton =
+                new JButton(
+                        "DELETE"
+                );
+
         JButton backButton =
-                new JButton("BACK");
+                new JButton(
+                        "BACK"
+                );
 
         stylePrimaryButton(
                 updatePriorityButton
@@ -436,6 +464,10 @@ public class EmergencyManagementFrame extends JFrame {
 
         stylePrimaryButton(
                 assignTeamButton
+        );
+
+        styleDeleteButton(
+                deleteButton
         );
 
         styleSecondaryButton(
@@ -475,6 +507,10 @@ public class EmergencyManagementFrame extends JFrame {
         );
 
         updatePanel.add(
+                deleteButton
+        );
+
+        updatePanel.add(
                 backButton
         );
 
@@ -484,13 +520,14 @@ public class EmergencyManagementFrame extends JFrame {
         );
 
         // =========================
-        // Center
+        // CENTER
         // =========================
 
         JPanel centerPanel =
                 new JPanel(
                         new BorderLayout(
-                                10, 10
+                                10,
+                                10
                         )
                 );
 
@@ -519,20 +556,23 @@ public class EmergencyManagementFrame extends JFrame {
         );
 
         // =========================
-        // Events
+        // TABLE SELECTION
         // =========================
 
         emergencyTable
                 .getSelectionModel()
-                .addListSelectionListener(e -> {
+                .addListSelectionListener(
+                        e -> {
 
-                    if (!e.getValueIsAdjusting()) {
-                        selectEmergency();
-                    }
-                });
+                            if (!e.getValueIsAdjusting()) {
+
+                                selectEmergency();
+                            }
+                        }
+                );
 
         // =========================
-        // Button Actions
+        // BUTTON ACTIONS
         // =========================
 
         searchButton.addActionListener(
@@ -559,27 +599,43 @@ public class EmergencyManagementFrame extends JFrame {
                 e -> openTeamAssignment()
         );
 
-        backButton.addActionListener(
-                e -> dispose()
+        deleteButton.addActionListener(
+                e -> deleteEmergency()
         );
 
-        add(mainPanel);
+        backButton.addActionListener(
+                e -> mainFrame.goBack()
+        );
 
-        // Initially nothing is selected.
-        setActionButtonsEnabled(false);
+        // =========================
+        // ADD PANEL
+        // =========================
+
+        setLayout(
+                new BorderLayout()
+        );
+
+        add(
+                mainPanel,
+                BorderLayout.CENTER
+        );
     }
 
     // =========================
-    // Load Emergencies
+    // LOAD EMERGENCIES
     // =========================
 
     private void loadEmergencies(
             ArrayList<Emergency> emergencies) {
 
-        tableModel.setRowCount(0);
+        tableModel.setRowCount(
+                0
+        );
 
         ArrayList<Emergency> sortedEmergencies =
-                new ArrayList<>(emergencies);
+                new ArrayList<>(
+                        emergencies
+                );
 
         sortByPriority(
                 sortedEmergencies
@@ -592,7 +648,9 @@ public class EmergencyManagementFrame extends JFrame {
                     emergency.getAssignedTeamId();
 
             if (assignedTeam == null) {
-                assignedTeam = "Not Assigned";
+
+                assignedTeam =
+                        "Not Assigned";
             }
 
             tableModel.addRow(
@@ -614,17 +672,16 @@ public class EmergencyManagementFrame extends JFrame {
             );
         }
 
-        selectedEmergency = null;
+        selectedEmergency =
+                null;
 
         selectedEmergencyLabel.setText(
                 "No emergency selected."
         );
-
-        setActionButtonsEnabled(false);
     }
 
     // =========================
-    // Sort By Priority
+    // SORT BY PRIORITY
     // =========================
 
     private void sortByPriority(
@@ -640,13 +697,15 @@ public class EmergencyManagementFrame extends JFrame {
 
                 int firstPriority =
                         getPriorityRank(
-                                emergencies.get(j)
+                                emergencies
+                                        .get(j)
                                         .getPriority()
                         );
 
                 int secondPriority =
                         getPriorityRank(
-                                emergencies.get(j + 1)
+                                emergencies
+                                        .get(j + 1)
                                         .getPriority()
                         );
 
@@ -670,45 +729,36 @@ public class EmergencyManagementFrame extends JFrame {
         }
     }
 
+    // =========================
+    // PRIORITY RANK
+    // =========================
+
     private int getPriorityRank(
             Priority priority) {
 
-        if (priority == Priority.CRITICAL) {
+        if (priority ==
+                Priority.CRITICAL) {
+
             return 1;
 
-        } else if (priority == Priority.HIGH) {
+        } else if (priority ==
+                Priority.HIGH) {
+
             return 2;
 
-        } else if (priority == Priority.MEDIUM) {
+        } else if (priority ==
+                Priority.MEDIUM) {
+
             return 3;
 
         } else {
+
             return 4;
         }
     }
 
     // =========================
-    // Enable / Disable Actions
-    // =========================
-
-    private void setActionButtonsEnabled(
-            boolean enabled) {
-
-        priorityComboBox.setEnabled(enabled);
-
-        statusComboBox.setEnabled(enabled);
-
-        updatePriorityButton.setEnabled(enabled);
-
-        updateStatusButton.setEnabled(enabled);
-
-        viewDetailsButton.setEnabled(enabled);
-
-        assignTeamButton.setEnabled(enabled);
-    }
-
-    // =========================
-    // Select Emergency
+    // SELECT EMERGENCY
     // =========================
 
     private void selectEmergency() {
@@ -718,13 +768,12 @@ public class EmergencyManagementFrame extends JFrame {
 
         if (selectedRow == -1) {
 
-            selectedEmergency = null;
+            selectedEmergency =
+                    null;
 
             selectedEmergencyLabel.setText(
                     "No emergency selected."
             );
-
-            setActionButtonsEnabled(false);
 
             return;
         }
@@ -750,15 +799,13 @@ public class EmergencyManagementFrame extends JFrame {
                             .getEmergencyId()
                             + " | "
                             + formatEmergencyType(
-                            selectedEmergency.getType()
+                            selectedEmergency
+                                    .getType()
                     )
                             + " | "
                             + formatPriority(
-                            selectedEmergency.getPriority()
-                    )
-                            + " | "
-                            + formatStatus(
-                            selectedEmergency.getStatus()
+                            selectedEmergency
+                                    .getPriority()
                     )
             );
 
@@ -775,19 +822,18 @@ public class EmergencyManagementFrame extends JFrame {
                                     .getStatus()
                     )
             );
-
-            setActionButtonsEnabled(true);
         }
     }
 
     // =========================
-    // Search
+    // SEARCH
     // =========================
 
     private void searchEmergencies() {
 
         String keyword =
-                searchField.getText()
+                searchField
+                        .getText()
                         .trim()
                         .toLowerCase();
 
@@ -833,7 +879,9 @@ public class EmergencyManagementFrame extends JFrame {
                     )
                             || formatEmergencyType(
                             emergency.getType()
-                    ).equals(selectedType);
+                    ).equals(
+                            selectedType
+                    );
 
             boolean priorityMatch =
                     selectedPriority.equals(
@@ -860,33 +908,38 @@ public class EmergencyManagementFrame extends JFrame {
                     && priorityMatch
                     && statusMatch) {
 
-                result.add(emergency);
+                result.add(
+                        emergency
+                );
             }
         }
 
-        loadEmergencies(result);
-
-        if (result.isEmpty()) {
-
-            selectedEmergencyLabel.setText(
-                    "No emergencies found."
-            );
-        }
+        loadEmergencies(
+                result
+        );
     }
 
     // =========================
-    // Clear Filters
+    // CLEAR FILTERS
     // =========================
 
     private void clearFilters() {
 
-        searchField.setText("");
+        searchField.setText(
+                ""
+        );
 
-        typeFilter.setSelectedIndex(0);
+        typeFilter.setSelectedIndex(
+                0
+        );
 
-        priorityFilter.setSelectedIndex(0);
+        priorityFilter.setSelectedIndex(
+                0
+        );
 
-        statusFilter.setSelectedIndex(0);
+        statusFilter.setSelectedIndex(
+                0
+        );
 
         loadEmergencies(
                 manager.getAllEmergencies()
@@ -894,12 +947,19 @@ public class EmergencyManagementFrame extends JFrame {
     }
 
     // =========================
-    // Update Priority
+    // UPDATE PRIORITY
     // =========================
 
     private void updatePriority() {
 
         if (selectedEmergency == null) {
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Please select an emergency first.",
+                    "No Selection",
+                    JOptionPane.WARNING_MESSAGE
+            );
 
             return;
         }
@@ -923,7 +983,7 @@ public class EmergencyManagementFrame extends JFrame {
             manager.saveData();
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Emergency priority updated successfully.",
                     "Update Successful",
                     JOptionPane.INFORMATION_MESSAGE
@@ -934,7 +994,7 @@ public class EmergencyManagementFrame extends JFrame {
         } else {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Unable to update emergency priority.",
                     "Update Failed",
                     JOptionPane.ERROR_MESSAGE
@@ -943,12 +1003,19 @@ public class EmergencyManagementFrame extends JFrame {
     }
 
     // =========================
-    // Update Status
+    // UPDATE STATUS
     // =========================
 
     private void updateStatus() {
 
         if (selectedEmergency == null) {
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Please select an emergency first.",
+                    "No Selection",
+                    JOptionPane.WARNING_MESSAGE
+            );
 
             return;
         }
@@ -972,7 +1039,7 @@ public class EmergencyManagementFrame extends JFrame {
             manager.saveData();
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Emergency status updated successfully.",
                     "Update Successful",
                     JOptionPane.INFORMATION_MESSAGE
@@ -983,21 +1050,86 @@ public class EmergencyManagementFrame extends JFrame {
         } else {
 
             JOptionPane.showMessageDialog(
-                    this,
-                    "Status update is not allowed for this emergency.",
+                    mainFrame,
+                    "Unable to update emergency status.",
                     "Update Failed",
-                    JOptionPane.WARNING_MESSAGE
+                    JOptionPane.ERROR_MESSAGE
             );
         }
     }
 
     // =========================
-    // View Details
+    // DELETE EMERGENCY
+    // =========================
+
+    private void deleteEmergency() {
+
+        if (selectedEmergency == null) {
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Please select an emergency first.",
+                    "No Selection",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            return;
+        }
+
+        int choice =
+                JOptionPane.showConfirmDialog(
+                        mainFrame,
+                        "Are you sure you want to delete emergency "
+                                + selectedEmergency.getEmergencyId()
+                                + "?",
+                        "Confirm Delete",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE
+                );
+
+        if (choice != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        String emergencyId =
+                selectedEmergency.getEmergencyId();
+
+        manager.removeEmergency(
+                emergencyId
+        );
+
+        manager.saveData();
+
+        JOptionPane.showMessageDialog(
+                mainFrame,
+                "Emergency deleted successfully.",
+                "Delete Successful",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+
+        selectedEmergency =
+                null;
+
+        emergencyTable.clearSelection();
+
+        refreshCurrentView();
+    }
+
+    // =========================
+    // VIEW DETAILS
     // =========================
 
     private void viewDetails() {
 
         if (selectedEmergency == null) {
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Please select an emergency first.",
+                    "No Selection",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
             return;
         }
 
@@ -1006,74 +1138,253 @@ public class EmergencyManagementFrame extends JFrame {
                         .getAssignedTeamId();
 
         if (assignedTeam == null) {
-            assignedTeam = "Not Assigned";
+
+            assignedTeam =
+                    "Not Assigned";
         }
 
-        String details =
+        // =========================
+        // CREATE DIALOG
+        // =========================
+
+        JDialog detailsDialog =
+                new JDialog(
+                        mainFrame,
+                        "Emergency Details",
+                        true
+                );
+
+        detailsDialog.setSize(
+                520,
+                500
+        );
+
+        detailsDialog.setLocationRelativeTo(
+                mainFrame
+        );
+
+        detailsDialog.setLayout(
+                new BorderLayout(
+                        10,
+                        10
+                )
+        );
+
+        // =========================
+        // TITLE
+        // =========================
+
+        JLabel titleLabel =
+                new JLabel(
+                        "EMERGENCY DETAILS",
+                        SwingConstants.CENTER
+                );
+
+        titleLabel.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        20
+                )
+        );
+
+        titleLabel.setForeground(
+                Color.decode("#242423")
+        );
+
+        titleLabel.setBorder(
+                BorderFactory.createEmptyBorder(
+                        15,
+                        10,
+                        10,
+                        10
+                )
+        );
+
+        // =========================
+        // DETAILS AREA
+        // =========================
+
+        JTextArea detailsArea =
+                new JTextArea();
+
+        detailsArea.setText(
                 "Emergency ID: "
-                        + selectedEmergency
-                        .getEmergencyId()
+                        + selectedEmergency.getEmergencyId()
                         + "\n\n"
+
                         + "Reported By: "
-                        + selectedEmergency
-                        .getReportedBy()
-                        + "\n"
+                        + selectedEmergency.getReportedBy()
+                        + "\n\n"
+
                         + "Type: "
                         + formatEmergencyType(
-                        selectedEmergency
-                                .getType()
+                        selectedEmergency.getType()
                 )
-                        + "\n"
+                        + "\n\n"
+
                         + "Priority: "
                         + formatPriority(
-                        selectedEmergency
-                                .getPriority()
+                        selectedEmergency.getPriority()
                 )
-                        + "\n"
+                        + "\n\n"
+
                         + "Location: "
-                        + selectedEmergency
-                        .getLocation()
-                        + "\n"
+                        + selectedEmergency.getLocation()
+                        + "\n\n"
+
                         + "Description: "
-                        + selectedEmergency
-                        .getDescription()
-                        + "\n"
+                        + selectedEmergency.getDescription()
+                        + "\n\n"
+
                         + "Status: "
                         + formatStatus(
-                        selectedEmergency
-                                .getStatus()
+                        selectedEmergency.getStatus()
                 )
-                        + "\n"
+                        + "\n\n"
+
                         + "Assigned Team: "
                         + assignedTeam
-                        + "\n"
-                        + "Date/Time: "
-                        + selectedEmergency
-                        .getDateTime();
+                        + "\n\n"
 
-        JOptionPane.showMessageDialog(
-                this,
-                details,
-                "Emergency Details",
-                JOptionPane.INFORMATION_MESSAGE
+                        + "Date/Time: "
+                        + selectedEmergency.getDateTime()
+        );
+
+        detailsArea.setEditable(
+                false
+        );
+
+        detailsArea.setLineWrap(
+                true
+        );
+
+        detailsArea.setWrapStyleWord(
+                true
+        );
+
+        detailsArea.setFont(
+                new Font(
+                        "Arial",
+                        Font.PLAIN,
+                        14
+                )
+        );
+
+        detailsArea.setBackground(
+                Color.decode("#E8EDDF")
+        );
+
+        detailsArea.setForeground(
+                Color.decode("#242423")
+        );
+
+        detailsArea.setBorder(
+                BorderFactory.createEmptyBorder(
+                        10,
+                        15,
+                        10,
+                        15
+                )
+        );
+
+        JScrollPane scrollPane =
+                new JScrollPane(
+                        detailsArea
+                );
+
+        // =========================
+        // CLOSE BUTTON
+        // =========================
+
+        JButton closeButton =
+                new JButton(
+                        "CLOSE"
+                );
+
+        closeButton.setBackground(
+                Color.decode("#333533")
+        );
+
+        closeButton.setForeground(
+                Color.WHITE
+        );
+
+        closeButton.setFocusPainted(
+                false
+        );
+
+        closeButton.addActionListener(
+                e -> detailsDialog.dispose()
+        );
+
+        JPanel buttonPanel =
+                new JPanel(
+                        new FlowLayout(
+                                FlowLayout.CENTER
+                        )
+                );
+
+        buttonPanel.setBackground(
+                Color.decode("#E8EDDF")
+        );
+
+        buttonPanel.add(
+                closeButton
+        );
+
+        // =========================
+        // ADD COMPONENTS
+        // =========================
+
+        detailsDialog.add(
+                titleLabel,
+                BorderLayout.NORTH
+        );
+
+        detailsDialog.add(
+                scrollPane,
+                BorderLayout.CENTER
+        );
+
+        detailsDialog.add(
+                buttonPanel,
+                BorderLayout.SOUTH
+        );
+
+        // =========================
+        // SHOW DIALOG
+        // =========================
+
+        detailsDialog.setVisible(
+                true
         );
     }
 
     // =========================
-    // Team Assignment
+    // TEAM ASSIGNMENT
     // =========================
 
     private void openTeamAssignment() {
 
         if (selectedEmergency == null) {
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Please select an emergency first.",
+                    "No Selection",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
             return;
         }
 
-        if (selectedEmergency.getStatus()
+        if (selectedEmergency
+                .getStatus()
                 != EmergencyStatus.PENDING) {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Only pending emergencies can be assigned.",
                     "Assignment Not Allowed",
                     JOptionPane.WARNING_MESSAGE
@@ -1082,16 +1393,24 @@ public class EmergencyManagementFrame extends JFrame {
             return;
         }
 
-        TeamAssignmentFrame frame =
+        TeamAssignmentFrame assignmentFrame =
                 new TeamAssignmentFrame(
+                        mainFrame,
                         manager
                 );
 
-        frame.setVisible(true);
+        mainFrame.addScreen(
+                "TEAM_ASSIGNMENT",
+                assignmentFrame
+        );
+
+        mainFrame.showScreen(
+                "TEAM_ASSIGNMENT"
+        );
     }
 
     // =========================
-    // Refresh
+    // REFRESH
     // =========================
 
     private void refreshCurrentView() {
@@ -1100,51 +1419,84 @@ public class EmergencyManagementFrame extends JFrame {
     }
 
     // =========================
-    // Formatting
+    // FORMAT TYPE
     // =========================
 
-    private String formatEmergencyType(
-            EmergencyType type) {
+    private String formatEmergencyType(EmergencyType type) {
 
-        if (type == EmergencyType.MEDICAL) {
-            return "Medical Emergency";
+        switch (type) {
 
-        } else if (
-                type == EmergencyType.FIRE) {
+            case MEDICAL:
+                return "Medical Emergency";
 
-            return "Fire Emergency";
+            case FIRE:
+                return "Fire Emergency";
 
-        } else if (
-                type == EmergencyType.ROAD_ACCIDENT) {
+            case ROAD_ACCIDENT:
+                return "Road Accident";
 
-            return "Road Accident";
+            case SECURITY:
+                return "Security Emergency";
 
-        } else if (
-                type == EmergencyType.SECURITY) {
+            case NATURAL_DISASTER:
+                return "Natural Disaster";
 
-            return "Security Emergency";
+            case GAS_LEAK:
+                return "Gas Leak";
 
-        } else {
-            return "Natural Disaster";
+            case ELECTRICAL_EMERGENCY:
+                return "Electrical Emergency";
+
+            case BUILDING_COLLAPSE:
+                return "Building Collapse";
+
+            case INDUSTRIAL_ACCIDENT:
+                return "Industrial Accident";
+
+            case MISSING_PERSON:
+                return "Missing Person";
+
+            case WATER_FLOOD_EMERGENCY:
+                return "Water / Flood Emergency";
+
+            case CUSTOM:
+                return "Other / Custom";
+
+            default:
+                return "Unknown";
         }
     }
+    // =========================
+    // FORMAT PRIORITY
+    // =========================
 
     private String formatPriority(
             Priority priority) {
 
-        if (priority == Priority.CRITICAL) {
+        if (priority ==
+                Priority.CRITICAL) {
+
             return "Critical";
 
-        } else if (priority == Priority.HIGH) {
+        } else if (priority ==
+                Priority.HIGH) {
+
             return "High";
 
-        } else if (priority == Priority.MEDIUM) {
+        } else if (priority ==
+                Priority.MEDIUM) {
+
             return "Medium";
 
         } else {
+
             return "Low";
         }
     }
+
+    // =========================
+    // FORMAT STATUS
+    // =========================
 
     private String formatStatus(
             EmergencyStatus status) {
@@ -1170,49 +1522,81 @@ public class EmergencyManagementFrame extends JFrame {
             return "Resolved";
 
         } else {
+
             return "Cancelled";
         }
     }
 
+    // =========================
+    // CONVERT PRIORITY
+    // =========================
+
     private Priority convertPriority(
             String priority) {
 
-        if (priority.equals("Critical")) {
+        if (priority.equals(
+                "Critical"
+        )) {
+
             return Priority.CRITICAL;
 
-        } else if (priority.equals("High")) {
+        } else if (priority.equals(
+                "High"
+        )) {
+
             return Priority.HIGH;
 
-        } else if (priority.equals("Medium")) {
+        } else if (priority.equals(
+                "Medium"
+        )) {
+
             return Priority.MEDIUM;
 
         } else {
+
             return Priority.LOW;
         }
     }
 
+    // =========================
+    // CONVERT STATUS
+    // =========================
+
     private EmergencyStatus convertStatus(
             String status) {
 
-        if (status.equals("Pending")) {
+        if (status.equals(
+                "Pending"
+        )) {
+
             return EmergencyStatus.PENDING;
 
-        } else if (status.equals("Assigned")) {
+        } else if (status.equals(
+                "Assigned"
+        )) {
+
             return EmergencyStatus.ASSIGNED;
 
-        } else if (status.equals("In Progress")) {
+        } else if (status.equals(
+                "In Progress"
+        )) {
+
             return EmergencyStatus.IN_PROGRESS;
 
-        } else if (status.equals("Resolved")) {
+        } else if (status.equals(
+                "Resolved"
+        )) {
+
             return EmergencyStatus.RESOLVED;
 
         } else {
+
             return EmergencyStatus.CANCELLED;
         }
     }
 
     // =========================
-    // Button Styling
+    // PRIMARY BUTTON
     // =========================
 
     private void stylePrimaryButton(
@@ -1234,8 +1618,42 @@ public class EmergencyManagementFrame extends JFrame {
                 )
         );
 
-        button.setFocusPainted(false);
+        button.setFocusPainted(
+                false
+        );
     }
+
+    // =========================
+    // DELETE BUTTON
+    // =========================
+
+    private void styleDeleteButton(
+            JButton button) {
+
+        button.setBackground(
+                Color.decode("#242423")
+        );
+
+        button.setForeground(
+                Color.WHITE
+        );
+
+        button.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        11
+                )
+        );
+
+        button.setFocusPainted(
+                false
+        );
+    }
+
+    // =========================
+    // SECONDARY BUTTON
+    // =========================
 
     private void styleSecondaryButton(
             JButton button) {
@@ -1256,6 +1674,8 @@ public class EmergencyManagementFrame extends JFrame {
                 )
         );
 
-        button.setFocusPainted(false);
+        button.setFocusPainted(
+                false
+        );
     }
 }

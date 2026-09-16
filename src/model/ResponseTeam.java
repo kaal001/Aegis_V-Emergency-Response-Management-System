@@ -27,6 +27,13 @@ public abstract class ResponseTeam implements Serializable {
         this.available = true;
     }
 
+    // Protected helper method for child classes
+    protected String getTeamResponseMessage() {
+        return "Team " + teamName
+                + " is responding to the emergency.";
+    }
+
+    // Abstract method implemented by child classes
     public abstract void respondToEmergency();
 
     public String getTeamId() {

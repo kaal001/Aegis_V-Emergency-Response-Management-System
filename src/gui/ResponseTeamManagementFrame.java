@@ -13,8 +13,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class ResponseTeamManagementFrame extends JFrame {
+public class ResponseTeamManagementFrame extends JPanel {
 
+    private MainFrame mainFrame;
     private EmergencyManager manager;
 
     private JTable teamTable;
@@ -36,22 +37,11 @@ public class ResponseTeamManagementFrame extends JFrame {
     private ResponseTeam selectedTeam;
 
     public ResponseTeamManagementFrame(
+            MainFrame mainFrame,
             EmergencyManager manager) {
 
+        this.mainFrame = mainFrame;
         this.manager = manager;
-
-        setTitle(
-                "Response Team Management - Emergency Response Management System"
-        );
-
-        setSize(1100, 720);
-
-        setDefaultCloseOperation(
-                JFrame.DISPOSE_ON_CLOSE
-        );
-
-        setLocationRelativeTo(null);
-        setResizable(false);
 
         createUI();
 
@@ -60,12 +50,17 @@ public class ResponseTeamManagementFrame extends JFrame {
         );
     }
 
+    // =========================
+    // CREATE UI
+    // =========================
+
     private void createUI() {
 
         JPanel mainPanel =
                 new JPanel(
                         new BorderLayout(
-                                10, 10
+                                10,
+                                10
                         )
                 );
 
@@ -75,12 +70,15 @@ public class ResponseTeamManagementFrame extends JFrame {
 
         mainPanel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        15, 15, 15, 15
+                        15,
+                        15,
+                        15,
+                        15
                 )
         );
 
         // =========================
-        // Title
+        // TITLE
         // =========================
 
         JLabel titleLabel =
@@ -103,7 +101,10 @@ public class ResponseTeamManagementFrame extends JFrame {
 
         titleLabel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        10, 10, 15, 10
+                        10,
+                        10,
+                        15,
+                        10
                 )
         );
 
@@ -113,13 +114,16 @@ public class ResponseTeamManagementFrame extends JFrame {
         );
 
         // =========================
-        // Top Filter Panel
+        // FILTER PANEL
         // =========================
 
         JPanel filterPanel =
                 new JPanel(
                         new GridLayout(
-                                2, 4, 10, 8
+                                2,
+                                4,
+                                10,
+                                8
                         )
                 );
 
@@ -129,7 +133,10 @@ public class ResponseTeamManagementFrame extends JFrame {
 
         filterPanel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        10, 10, 10, 10
+                        10,
+                        10,
+                        10,
+                        10
                 )
         );
 
@@ -191,10 +198,14 @@ public class ResponseTeamManagementFrame extends JFrame {
         );
 
         JButton searchButton =
-                new JButton("SEARCH");
+                new JButton(
+                        "SEARCH"
+                );
 
         JButton clearButton =
-                new JButton("CLEAR");
+                new JButton(
+                        "CLEAR"
+                );
 
         stylePrimaryButton(
                 searchButton
@@ -218,7 +229,7 @@ public class ResponseTeamManagementFrame extends JFrame {
         );
 
         // =========================
-        // Team Table
+        // TEAM TABLE
         // =========================
 
         String[] columns = {
@@ -246,9 +257,13 @@ public class ResponseTeamManagementFrame extends JFrame {
                 };
 
         teamTable =
-                new JTable(tableModel);
+                new JTable(
+                        tableModel
+                );
 
-        teamTable.setRowHeight(28);
+        teamTable.setRowHeight(
+                28
+        );
 
         teamTable.setFont(
                 new Font(
@@ -282,13 +297,14 @@ public class ResponseTeamManagementFrame extends JFrame {
         );
 
         // =========================
-        // Bottom Form
+        // BOTTOM PANEL
         // =========================
 
         JPanel bottomPanel =
                 new JPanel(
                         new BorderLayout(
-                                10, 10
+                                10,
+                                10
                         )
                 );
 
@@ -297,13 +313,16 @@ public class ResponseTeamManagementFrame extends JFrame {
         );
 
         // =========================
-        // Form
+        // FORM
         // =========================
 
         JPanel formPanel =
                 new JPanel(
                         new GridLayout(
-                                3, 4, 10, 10
+                                3,
+                                4,
+                                10,
+                                10
                         )
                 );
 
@@ -313,7 +332,10 @@ public class ResponseTeamManagementFrame extends JFrame {
 
         formPanel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        10, 10, 10, 10
+                        10,
+                        10,
+                        10,
+                        10
                 )
         );
 
@@ -402,7 +424,7 @@ public class ResponseTeamManagementFrame extends JFrame {
         );
 
         // =========================
-        // Buttons
+        // BUTTONS
         // =========================
 
         JPanel buttonPanel =
@@ -419,31 +441,69 @@ public class ResponseTeamManagementFrame extends JFrame {
         );
 
         JButton addButton =
-                new JButton("ADD TEAM");
+                new JButton(
+                        "ADD TEAM"
+                );
 
         JButton updateButton =
-                new JButton("UPDATE TEAM");
+                new JButton(
+                        "UPDATE TEAM"
+                );
 
         JButton deleteButton =
-                new JButton("DELETE TEAM");
+                new JButton(
+                        "DELETE TEAM"
+                );
 
         JButton clearFormButton =
-                new JButton("CLEAR FORM");
+                new JButton(
+                        "CLEAR FORM"
+                );
 
         JButton backButton =
-                new JButton("BACK");
+                new JButton(
+                        "BACK"
+                );
 
-        stylePrimaryButton(addButton);
-        stylePrimaryButton(updateButton);
-        stylePrimaryButton(deleteButton);
-        styleSecondaryButton(clearFormButton);
-        styleSecondaryButton(backButton);
+        stylePrimaryButton(
+                addButton
+        );
 
-        buttonPanel.add(addButton);
-        buttonPanel.add(updateButton);
-        buttonPanel.add(deleteButton);
-        buttonPanel.add(clearFormButton);
-        buttonPanel.add(backButton);
+        stylePrimaryButton(
+                updateButton
+        );
+
+        stylePrimaryButton(
+                deleteButton
+        );
+
+        styleSecondaryButton(
+                clearFormButton
+        );
+
+        styleSecondaryButton(
+                backButton
+        );
+
+        buttonPanel.add(
+                addButton
+        );
+
+        buttonPanel.add(
+                updateButton
+        );
+
+        buttonPanel.add(
+                deleteButton
+        );
+
+        buttonPanel.add(
+                clearFormButton
+        );
+
+        buttonPanel.add(
+                backButton
+        );
 
         bottomPanel.add(
                 buttonPanel,
@@ -456,20 +516,23 @@ public class ResponseTeamManagementFrame extends JFrame {
         );
 
         // =========================
-        // Table Selection
+        // TABLE SELECTION
         // =========================
 
         teamTable
                 .getSelectionModel()
-                .addListSelectionListener(e -> {
+                .addListSelectionListener(
+                        e -> {
 
-                    if (!e.getValueIsAdjusting()) {
-                        selectTeam();
-                    }
-                });
+                            if (!e.getValueIsAdjusting()) {
+
+                                selectTeam();
+                            }
+                        }
+                );
 
         // =========================
-        // Button Actions
+        // BUTTON ACTIONS
         // =========================
 
         searchButton.addActionListener(
@@ -497,14 +560,25 @@ public class ResponseTeamManagementFrame extends JFrame {
         );
 
         backButton.addActionListener(
-                e -> dispose()
+                e -> mainFrame.goBack()
         );
 
-        add(mainPanel);
+        // =========================
+        // ADD MAIN PANEL
+        // =========================
+
+        setLayout(
+                new BorderLayout()
+        );
+
+        add(
+                mainPanel,
+                BorderLayout.CENTER
+        );
     }
 
     // =========================
-    // Load Teams
+    // LOAD TEAMS
     // =========================
 
     private void loadTeams(
@@ -518,9 +592,14 @@ public class ResponseTeamManagementFrame extends JFrame {
             String availability;
 
             if (team.isAvailable()) {
-                availability = "Available";
+
+                availability =
+                        "Available";
+
             } else {
-                availability = "Busy";
+
+                availability =
+                        "Busy";
             }
 
             tableModel.addRow(
@@ -541,7 +620,7 @@ public class ResponseTeamManagementFrame extends JFrame {
     }
 
     // =========================
-    // Select Team
+    // SELECT TEAM
     // =========================
 
     private void selectTeam() {
@@ -565,7 +644,9 @@ public class ResponseTeamManagementFrame extends JFrame {
                         .toString();
 
         selectedTeam =
-                manager.findTeamById(teamId);
+                manager.findTeamById(
+                        teamId
+                );
 
         if (selectedTeam != null) {
 
@@ -616,26 +697,30 @@ public class ResponseTeamManagementFrame extends JFrame {
     }
 
     // =========================
-    // Add Team
+    // ADD TEAM
     // =========================
 
     private void addTeam() {
 
         String teamId =
-                teamIdField.getText().trim();
+                teamIdField
+                        .getText()
+                        .trim();
 
         String teamName =
-                teamNameField.getText().trim();
+                teamNameField
+                        .getText()
+                        .trim();
 
         String contact =
-                contactField.getText().trim();
+                contactField
+                        .getText()
+                        .trim();
 
         String membersText =
-                membersField.getText().trim();
-
-        // =========================
-        // Empty Check
-        // =========================
+                membersField
+                        .getText()
+                        .trim();
 
         if (teamId.isEmpty()
                 || teamName.isEmpty()
@@ -643,7 +728,7 @@ public class ResponseTeamManagementFrame extends JFrame {
                 || membersText.isEmpty()) {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Please fill in all team information.",
                     "Missing Information",
                     JOptionPane.WARNING_MESSAGE
@@ -652,31 +737,12 @@ public class ResponseTeamManagementFrame extends JFrame {
             return;
         }
 
-        // =========================
-        // Contact Validation
-        // =========================
-
-        if (!isValidContact(contact)) {
+        if (manager.findTeamById(
+                teamId
+        ) != null) {
 
             JOptionPane.showMessageDialog(
-                    this,
-                    "Contact number must contain only digits "
-                            + "and be between 7 and 15 digits.",
-                    "Invalid Contact",
-                    JOptionPane.WARNING_MESSAGE
-            );
-
-            return;
-        }
-
-        // =========================
-        // Duplicate Team ID
-        // =========================
-
-        if (manager.findTeamById(teamId) != null) {
-
-            JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Team ID already exists.",
                     "Add Team Error",
                     JOptionPane.ERROR_MESSAGE
@@ -684,10 +750,6 @@ public class ResponseTeamManagementFrame extends JFrame {
 
             return;
         }
-
-        // =========================
-        // Members Validation
-        // =========================
 
         int numberOfMembers;
 
@@ -701,7 +763,7 @@ public class ResponseTeamManagementFrame extends JFrame {
         } catch (NumberFormatException e) {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Number of members must be a valid number.",
                     "Invalid Input",
                     JOptionPane.WARNING_MESSAGE
@@ -713,7 +775,7 @@ public class ResponseTeamManagementFrame extends JFrame {
         if (numberOfMembers <= 0) {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Number of members must be greater than zero.",
                     "Invalid Input",
                     JOptionPane.WARNING_MESSAGE
@@ -741,7 +803,7 @@ public class ResponseTeamManagementFrame extends JFrame {
         if (team == null) {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Unable to create response team.",
                     "Error",
                     JOptionPane.ERROR_MESSAGE
@@ -755,21 +817,29 @@ public class ResponseTeamManagementFrame extends JFrame {
                         .getSelectedItem()
                         .toString();
 
-        if (availability.equals("Available")) {
+        if (availability.equals(
+                "Available"
+        )) {
 
-            team.setAvailable(true);
+            team.setAvailable(
+                    true
+            );
 
         } else {
 
-            team.setAvailable(false);
+            team.setAvailable(
+                    false
+            );
         }
 
-        manager.addTeam(team);
+        manager.addTeam(
+                team
+        );
 
         manager.saveData();
 
         JOptionPane.showMessageDialog(
-                this,
+                mainFrame,
                 "Response team added successfully.",
                 "Success",
                 JOptionPane.INFORMATION_MESSAGE
@@ -783,7 +853,7 @@ public class ResponseTeamManagementFrame extends JFrame {
     }
 
     // =========================
-    // Update Team
+    // UPDATE TEAM
     // =========================
 
     private void updateTeam() {
@@ -791,7 +861,7 @@ public class ResponseTeamManagementFrame extends JFrame {
         if (selectedTeam == null) {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Please select a team first.",
                     "No Selection",
                     JOptionPane.WARNING_MESSAGE
@@ -801,24 +871,26 @@ public class ResponseTeamManagementFrame extends JFrame {
         }
 
         String teamName =
-                teamNameField.getText().trim();
+                teamNameField
+                        .getText()
+                        .trim();
 
         String contact =
-                contactField.getText().trim();
+                contactField
+                        .getText()
+                        .trim();
 
         String membersText =
-                membersField.getText().trim();
-
-        // =========================
-        // Empty Check
-        // =========================
+                membersField
+                        .getText()
+                        .trim();
 
         if (teamName.isEmpty()
                 || contact.isEmpty()
                 || membersText.isEmpty()) {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Please fill in all editable fields.",
                     "Missing Information",
                     JOptionPane.WARNING_MESSAGE
@@ -826,27 +898,6 @@ public class ResponseTeamManagementFrame extends JFrame {
 
             return;
         }
-
-        // =========================
-        // Contact Validation
-        // =========================
-
-        if (!isValidContact(contact)) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Contact number must contain only digits "
-                            + "and be between 7 and 15 digits.",
-                    "Invalid Contact",
-                    JOptionPane.WARNING_MESSAGE
-            );
-
-            return;
-        }
-
-        // =========================
-        // Members Validation
-        // =========================
 
         int numberOfMembers;
 
@@ -860,7 +911,7 @@ public class ResponseTeamManagementFrame extends JFrame {
         } catch (NumberFormatException e) {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Number of members must be a valid number.",
                     "Invalid Input",
                     JOptionPane.WARNING_MESSAGE
@@ -872,7 +923,7 @@ public class ResponseTeamManagementFrame extends JFrame {
         if (numberOfMembers <= 0) {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Number of members must be greater than zero.",
                     "Invalid Input",
                     JOptionPane.WARNING_MESSAGE
@@ -880,10 +931,6 @@ public class ResponseTeamManagementFrame extends JFrame {
 
             return;
         }
-
-        // =========================
-        // Update Team
-        // =========================
 
         selectedTeam.setTeamName(
                 teamName
@@ -902,19 +949,25 @@ public class ResponseTeamManagementFrame extends JFrame {
                         .getSelectedItem()
                         .toString();
 
-        if (availability.equals("Available")) {
+        if (availability.equals(
+                "Available"
+        )) {
 
-            selectedTeam.setAvailable(true);
+            selectedTeam.setAvailable(
+                    true
+            );
 
         } else {
 
-            selectedTeam.setAvailable(false);
+            selectedTeam.setAvailable(
+                    false
+            );
         }
 
         manager.saveData();
 
         JOptionPane.showMessageDialog(
-                this,
+                mainFrame,
                 "Response team updated successfully.",
                 "Success",
                 JOptionPane.INFORMATION_MESSAGE
@@ -928,7 +981,7 @@ public class ResponseTeamManagementFrame extends JFrame {
     }
 
     // =========================
-    // Delete Team
+    // DELETE TEAM
     // =========================
 
     private void deleteTeam() {
@@ -936,7 +989,7 @@ public class ResponseTeamManagementFrame extends JFrame {
         if (selectedTeam == null) {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Please select a team first.",
                     "No Selection",
                     JOptionPane.WARNING_MESSAGE
@@ -947,7 +1000,7 @@ public class ResponseTeamManagementFrame extends JFrame {
 
         int choice =
                 JOptionPane.showConfirmDialog(
-                        this,
+                        mainFrame,
                         "Are you sure you want to delete "
                                 + selectedTeam.getTeamName()
                                 + "?",
@@ -968,7 +1021,7 @@ public class ResponseTeamManagementFrame extends JFrame {
         manager.saveData();
 
         JOptionPane.showMessageDialog(
-                this,
+                mainFrame,
                 "Response team deleted successfully.",
                 "Success",
                 JOptionPane.INFORMATION_MESSAGE
@@ -982,13 +1035,14 @@ public class ResponseTeamManagementFrame extends JFrame {
     }
 
     // =========================
-    // Search Teams
+    // SEARCH TEAMS
     // =========================
 
     private void searchTeams() {
 
         String keyword =
-                searchField.getText()
+                searchField
+                        .getText()
                         .trim()
                         .toLowerCase();
 
@@ -1047,24 +1101,34 @@ public class ResponseTeamManagementFrame extends JFrame {
                     && typeMatch
                     && availabilityMatch) {
 
-                result.add(team);
+                result.add(
+                        team
+                );
             }
         }
 
-        loadTeams(result);
+        loadTeams(
+                result
+        );
     }
 
     // =========================
-    // Clear Search
+    // CLEAR SEARCH
     // =========================
 
     private void clearSearch() {
 
-        searchField.setText("");
+        searchField.setText(
+                ""
+        );
 
-        typeFilter.setSelectedIndex(0);
+        typeFilter.setSelectedIndex(
+                0
+        );
 
-        availabilityFilter.setSelectedIndex(0);
+        availabilityFilter.setSelectedIndex(
+                0
+        );
 
         loadTeams(
                 manager.getAllTeams()
@@ -1072,24 +1136,38 @@ public class ResponseTeamManagementFrame extends JFrame {
     }
 
     // =========================
-    // Clear Form
+    // CLEAR FORM
     // =========================
 
     private void clearForm() {
 
-        teamIdField.setText("");
+        teamIdField.setText(
+                ""
+        );
 
-        teamNameField.setText("");
+        teamNameField.setText(
+                ""
+        );
 
-        contactField.setText("");
+        contactField.setText(
+                ""
+        );
 
-        membersField.setText("");
+        membersField.setText(
+                ""
+        );
 
-        teamTypeComboBox.setSelectedIndex(0);
+        teamTypeComboBox.setSelectedIndex(
+                0
+        );
 
-        availabilityComboBox.setSelectedIndex(0);
+        availabilityComboBox.setSelectedIndex(
+                0
+        );
 
-        teamTypeComboBox.setEnabled(true);
+        teamTypeComboBox.setEnabled(
+                true
+        );
 
         teamTable.clearSelection();
 
@@ -1097,7 +1175,7 @@ public class ResponseTeamManagementFrame extends JFrame {
     }
 
     // =========================
-    // Create Team Object
+    // CREATE TEAM OBJECT
     // =========================
 
     private ResponseTeam createTeam(
@@ -1117,9 +1195,8 @@ public class ResponseTeamManagementFrame extends JFrame {
                     members
             );
 
-        } else if (
-                teamType ==
-                        TeamType.FIRE) {
+        } else if (teamType ==
+                TeamType.FIRE) {
 
             return new FireTeam(
                     teamId,
@@ -1128,9 +1205,8 @@ public class ResponseTeamManagementFrame extends JFrame {
                     members
             );
 
-        } else if (
-                teamType ==
-                        TeamType.RESCUE) {
+        } else if (teamType ==
+                TeamType.RESCUE) {
 
             return new RescueTeam(
                     teamId,
@@ -1151,21 +1227,27 @@ public class ResponseTeamManagementFrame extends JFrame {
     }
 
     // =========================
-    // Convert Team Type
+    // CONVERT TEAM TYPE
     // =========================
 
     private TeamType convertTeamType(
             String type) {
 
-        if (type.equals("Ambulance")) {
+        if (type.equals(
+                "Ambulance"
+        )) {
 
             return TeamType.AMBULANCE;
 
-        } else if (type.equals("Fire")) {
+        } else if (type.equals(
+                "Fire"
+        )) {
 
             return TeamType.FIRE;
 
-        } else if (type.equals("Rescue")) {
+        } else if (type.equals(
+                "Rescue"
+        )) {
 
             return TeamType.RESCUE;
 
@@ -1174,6 +1256,10 @@ public class ResponseTeamManagementFrame extends JFrame {
             return TeamType.SECURITY;
         }
     }
+
+    // =========================
+    // FORMAT TEAM TYPE
+    // =========================
 
     private String formatTeamType(
             TeamType type) {
@@ -1200,35 +1286,7 @@ public class ResponseTeamManagementFrame extends JFrame {
     }
 
     // =========================
-    // Contact Validation
-    // =========================
-
-    private boolean isValidContact(
-            String contact) {
-
-        if (contact.length() < 7
-                || contact.length() > 15) {
-
-            return false;
-        }
-
-        for (int i = 0;
-             i < contact.length();
-             i++) {
-
-            if (!Character.isDigit(
-                    contact.charAt(i)
-            )) {
-
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    // =========================
-    // Button Styling
+    // PRIMARY BUTTON
     // =========================
 
     private void stylePrimaryButton(
@@ -1250,8 +1308,14 @@ public class ResponseTeamManagementFrame extends JFrame {
                 )
         );
 
-        button.setFocusPainted(false);
+        button.setFocusPainted(
+                false
+        );
     }
+
+    // =========================
+    // SECONDARY BUTTON
+    // =========================
 
     private void styleSecondaryButton(
             JButton button) {
@@ -1272,6 +1336,8 @@ public class ResponseTeamManagementFrame extends JFrame {
                 )
         );
 
-        button.setFocusPainted(false);
+        button.setFocusPainted(
+                false
+        );
     }
 }

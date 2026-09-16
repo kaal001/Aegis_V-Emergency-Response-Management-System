@@ -12,6 +12,16 @@ public class Assignment implements Serializable {
     private String assignedTime;
     private String notes;
 
+    // Default / No-Argument Constructor
+    public Assignment() {
+        this.assignmentId = "";
+        this.emergencyId = "";
+        this.teamId = "";
+        this.assignedTime = "";
+        this.notes = "";
+    }
+
+    // Parameterized Constructor
     public Assignment(String assignmentId, String emergencyId,
                       String teamId, String assignedTime) {
 
@@ -30,12 +40,24 @@ public class Assignment implements Serializable {
         return emergencyId;
     }
 
+    public void setEmergencyId(String emergencyId) {
+        this.emergencyId = emergencyId;
+    }
+
     public String getTeamId() {
         return teamId;
     }
 
+    public void setTeamId(String teamId) {
+        this.teamId = teamId;
+    }
+
     public String getAssignedTime() {
         return assignedTime;
+    }
+
+    public void setAssignedTime(String assignedTime) {
+        this.assignedTime = assignedTime;
     }
 
     public String getNotes() {

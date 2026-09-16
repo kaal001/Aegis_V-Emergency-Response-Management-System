@@ -20,6 +20,20 @@ public class Emergency implements Serializable {
     private String dateTime;
     private String assignedTeamId;
 
+    // Default / No-Argument Constructor
+    public Emergency() {
+        this.emergencyId = "";
+        this.reportedBy = "";
+        this.type = null;
+        this.priority = null;
+        this.location = "";
+        this.description = "";
+        this.dateTime = "";
+        this.status = EmergencyStatus.PENDING;
+        this.assignedTeamId = null;
+    }
+
+    // Parameterized Constructor
     public Emergency(String emergencyId, String reportedBy,
                      EmergencyType type, Priority priority,
                      String location, String description,

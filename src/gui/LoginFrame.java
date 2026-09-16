@@ -7,45 +7,73 @@ import model.User;
 import javax.swing.*;
 import java.awt.*;
 
-public class LoginFrame extends JFrame {
+public class LoginFrame extends JPanel {
 
+    private MainFrame mainFrame;
     private EmergencyManager manager;
 
     private JTextField usernameField;
     private JPasswordField passwordField;
 
-    public LoginFrame(EmergencyManager manager) {
+    public LoginFrame(
+            MainFrame mainFrame,
+            EmergencyManager manager
+    ) {
 
+        this.mainFrame = mainFrame;
         this.manager = manager;
-
-        setTitle(
-                "Emergency Response Management System"
-        );
-
-        setSize(500, 400);
-
-        setDefaultCloseOperation(
-                JFrame.EXIT_ON_CLOSE
-        );
-
-        setLocationRelativeTo(null);
-        setResizable(false);
 
         createLoginUI();
     }
 
+    // =====================================================
+    // COMPATIBILITY CONSTRUCTOR
+    // =====================================================
+
+    public LoginFrame(
+            EmergencyManager manager
+    ) {
+
+        this.manager = manager;
+
+        MainFrame frame =
+                new MainFrame();
+
+        this.mainFrame = frame;
+
+        createLoginUI();
+
+        frame.addScreen(
+                "LOGIN",
+                this
+        );
+
+        frame.showScreen(
+                "LOGIN"
+        );
+
+        frame.setVisible(
+                true
+        );
+    }
+
+    // =====================================================
+    // CREATE LOGIN UI
+    // =====================================================
+
     private void createLoginUI() {
 
-        JPanel mainPanel =
-                new JPanel(new BorderLayout());
+        setLayout(
+                new BorderLayout()
+        );
 
-        mainPanel.setBackground(
+        setBackground(
                 Color.decode("#E8EDDF")
         );
 
-        // =========================
-        // Title
-        // =========================
+        // =================================================
+        // TITLE
+        // =================================================
 
         JLabel titleLabel =
                 new JLabel(
@@ -57,7 +85,7 @@ public class LoginFrame extends JFrame {
                 new Font(
                         "Arial",
                         Font.BOLD,
-                        24
+                        25
                 )
         );
 
@@ -67,104 +95,330 @@ public class LoginFrame extends JFrame {
 
         titleLabel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        30, 10, 20, 10
+                        28,
+                        10,
+                        12,
+                        10
                 )
         );
 
-        mainPanel.add(
+        add(
                 titleLabel,
                 BorderLayout.NORTH
         );
 
-        // =========================
-        // Login Form
-        // =========================
+        // =================================================
+        // LOGIN CARD
+        // =================================================
+
+        JPanel card =
+                new JPanel(
+                        new BorderLayout()
+                );
+
+        card.setBackground(
+                Color.decode("#CFDBD5")
+        );
+
+        card.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(
+                                Color.decode("#333533")
+                        ),
+                        BorderFactory.createEmptyBorder(
+                                22,
+                                28,
+                                22,
+                                28
+                        )
+                )
+        );
+
+        card.setPreferredSize(
+                new Dimension(
+                        540,
+                        285
+                )
+        );
+
+        // =================================================
+        // FORM
+        // =================================================
 
         JPanel formPanel =
                 new JPanel(
-                        new GridLayout(
-                                5, 2, 10, 15
-                        )
+                        new GridBagLayout()
                 );
 
         formPanel.setBackground(
                 Color.decode("#CFDBD5")
         );
 
-        formPanel.setBorder(
-                BorderFactory.createEmptyBorder(
-                        25, 50, 25, 50
+        GridBagConstraints gbc =
+                new GridBagConstraints();
+
+        gbc.insets =
+                new Insets(
+                        6,
+                        6,
+                        6,
+                        6
+                );
+
+        // =================================================
+        // USERNAME LABEL
+        // =================================================
+
+        JLabel usernameLabel =
+                new JLabel(
+                        "Username:"
+                );
+
+        usernameLabel.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        14
                 )
         );
 
-        JLabel usernameLabel =
-                new JLabel("Username:");
+        usernameLabel.setForeground(
+                Color.decode("#242423")
+        );
 
-        JLabel passwordLabel =
-                new JLabel("Password:");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+
+        gbc.weightx = 0;
+
+        gbc.fill =
+                GridBagConstraints.NONE;
+
+        gbc.anchor =
+                GridBagConstraints.WEST;
+
+        formPanel.add(
+                usernameLabel,
+                gbc
+        );
+
+        // =================================================
+        // USERNAME FIELD
+        // =================================================
 
         usernameField =
                 new JTextField();
 
+        usernameField.setFont(
+                new Font(
+                        "Arial",
+                        Font.PLAIN,
+                        14
+                )
+        );
+
+        usernameField.setPreferredSize(
+                new Dimension(
+                        300,
+                        36
+                )
+        );
+
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+
+        gbc.weightx = 1;
+
+        gbc.fill =
+                GridBagConstraints.HORIZONTAL;
+
+        formPanel.add(
+                usernameField,
+                gbc
+        );
+
+        // =================================================
+        // PASSWORD LABEL
+        // =================================================
+
+        JLabel passwordLabel =
+                new JLabel(
+                        "Password:"
+                );
+
+        passwordLabel.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        14
+                )
+        );
+
+        passwordLabel.setForeground(
+                Color.decode("#242423")
+        );
+
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+
+        gbc.weightx = 0;
+
+        gbc.fill =
+                GridBagConstraints.NONE;
+
+        gbc.anchor =
+                GridBagConstraints.WEST;
+
+        formPanel.add(
+                passwordLabel,
+                gbc
+        );
+
+        // =================================================
+        // PASSWORD FIELD
+        // =================================================
+
         passwordField =
                 new JPasswordField();
 
+        passwordField.setFont(
+                new Font(
+                        "Arial",
+                        Font.PLAIN,
+                        14
+                )
+        );
+
+        passwordField.setPreferredSize(
+                new Dimension(
+                        300,
+                        36
+                )
+        );
+
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+
+        gbc.weightx = 1;
+
+        gbc.fill =
+                GridBagConstraints.HORIZONTAL;
+
+        formPanel.add(
+                passwordField,
+                gbc
+        );
+
+        // =================================================
+        // USER LOGIN BUTTON
+        // =================================================
+
         JButton userLoginButton =
-                new JButton("USER LOGIN");
+                new JButton(
+                        "USER LOGIN"
+                );
+
+        stylePrimaryButton(
+                userLoginButton
+        );
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+
+        gbc.weightx = 1;
+
+        gbc.fill =
+                GridBagConstraints.HORIZONTAL;
+
+        formPanel.add(
+                userLoginButton,
+                gbc
+        );
+
+        // =================================================
+        // ADMIN LOGIN BUTTON
+        // =================================================
 
         JButton adminLoginButton =
-                new JButton("ADMIN LOGIN");
+                new JButton(
+                        "ADMIN LOGIN"
+                );
+
+        stylePrimaryButton(
+                adminLoginButton
+        );
+
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+
+        gbc.weightx = 1;
+
+        gbc.fill =
+                GridBagConstraints.HORIZONTAL;
+
+        formPanel.add(
+                adminLoginButton,
+                gbc
+        );
+
+        // =================================================
+        // REGISTER BUTTON
+        // =================================================
 
         JButton registerButton =
-                new JButton("REGISTER");
+                new JButton(
+                        "REGISTER"
+                );
 
-        // =========================
-        // Button Styling
-        // =========================
-
-        userLoginButton.setBackground(
-                Color.decode("#F5CB5C")
+        styleSecondaryButton(
+                registerButton
         );
 
-        adminLoginButton.setBackground(
-                Color.decode("#F5CB5C")
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+
+        gbc.gridwidth = 2;
+
+        gbc.weightx = 1;
+
+        gbc.fill =
+                GridBagConstraints.HORIZONTAL;
+
+        formPanel.add(
+                registerButton,
+                gbc
         );
 
-        registerButton.setBackground(
-                Color.decode("#333533")
+        card.add(
+                formPanel,
+                BorderLayout.CENTER
         );
 
-        userLoginButton.setForeground(
-                Color.decode("#242423")
+        // =================================================
+        // CENTER CARD
+        // =================================================
+
+        JPanel centerPanel =
+                new JPanel(
+                        new GridBagLayout()
+                );
+
+        centerPanel.setBackground(
+                Color.decode("#E8EDDF")
         );
 
-        adminLoginButton.setForeground(
-                Color.decode("#242423")
+        centerPanel.add(
+                card
         );
 
-        registerButton.setForeground(
-                Color.WHITE
+        add(
+                centerPanel,
+                BorderLayout.CENTER
         );
 
-        userLoginButton.setFocusPainted(false);
-        adminLoginButton.setFocusPainted(false);
-        registerButton.setFocusPainted(false);
-
-        // =========================
-        // Add Components
-        // =========================
-
-        formPanel.add(usernameLabel);
-        formPanel.add(usernameField);
-
-        formPanel.add(passwordLabel);
-        formPanel.add(passwordField);
-
-        formPanel.add(userLoginButton);
-        formPanel.add(adminLoginButton);
-
-        formPanel.add(registerButton);
-        formPanel.add(new JLabel(""));
+        // =================================================
+        // INFO TEXT
+        // =================================================
 
         JLabel infoLabel =
                 new JLabel(
@@ -184,50 +438,23 @@ public class LoginFrame extends JFrame {
                 Color.decode("#333533")
         );
 
-        formPanel.add(new JLabel(""));
-        formPanel.add(infoLabel);
-
-        mainPanel.add(
-                formPanel,
-                BorderLayout.CENTER
-        );
-
-        // =========================
-        // Footer
-        // =========================
-
-        JLabel footerLabel =
-                new JLabel(
-                        "Aegis_V",
-                        SwingConstants.CENTER
-                );
-
-        footerLabel.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        16
-                )
-        );
-
-        footerLabel.setForeground(
-                Color.decode("#333533")
-        );
-
-        footerLabel.setBorder(
+        infoLabel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        10, 10, 15, 10
+                        4,
+                        10,
+                        14,
+                        10
                 )
         );
 
-        mainPanel.add(
-                footerLabel,
+        add(
+                infoLabel,
                 BorderLayout.SOUTH
         );
 
-        // =========================
-        // Button Actions
-        // =========================
+        // =================================================
+        // ACTIONS
+        // =================================================
 
         userLoginButton.addActionListener(
                 e -> userLogin()
@@ -241,28 +468,33 @@ public class LoginFrame extends JFrame {
                 e -> openRegistration()
         );
 
-        add(mainPanel);
+        passwordField.addActionListener(
+                e -> userLogin()
+        );
     }
 
-    // =========================
-    // User Login
-    // =========================
+    // =====================================================
+    // USER LOGIN
+    // =====================================================
 
     private void userLogin() {
 
         String username =
-                usernameField.getText().trim();
+                usernameField
+                        .getText()
+                        .trim();
 
         String password =
                 new String(
-                        passwordField.getPassword()
+                        passwordField
+                                .getPassword()
                 );
 
         if (username.isEmpty()
                 || password.isEmpty()) {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Please enter username and password.",
                     "Login Error",
                     JOptionPane.WARNING_MESSAGE
@@ -274,7 +506,7 @@ public class LoginFrame extends JFrame {
         if (manager.getUsers().isEmpty()) {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "No registered user was found.\n"
                             + "Please register a user first.",
                     "Login Failed",
@@ -286,18 +518,28 @@ public class LoginFrame extends JFrame {
 
         User loggedInUser = null;
 
-        for (User user : manager.getUsers()) {
+        for (User user :
+                manager.getUsers()) {
 
             String savedUsername =
-                    user.getUsername().trim();
+                    user.getUsername()
+                            .trim();
 
             String savedPassword =
                     user.getPassword();
 
-            if (savedUsername.equalsIgnoreCase(username)
-                    && savedPassword.equals(password)) {
+            if (savedUsername
+                    .equalsIgnoreCase(
+                            username
+                    )
+                    &&
+                    savedPassword
+                            .equals(
+                                    password
+                            )) {
 
                 loggedInUser = user;
+
                 break;
             }
         }
@@ -305,26 +547,20 @@ public class LoginFrame extends JFrame {
         if (loggedInUser != null) {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "User login successful.",
                     "Login Successful",
                     JOptionPane.INFORMATION_MESSAGE
             );
 
-            dispose();
-
-            UserDashboard dashboard =
-                    new UserDashboard(
-                            manager,
-                            loggedInUser
-                    );
-
-            dashboard.setVisible(true);
+            openUserDashboard(
+                    loggedInUser
+            );
 
         } else {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Invalid user username or password.\n"
                             + "Please check your credentials "
                             + "or register first.",
@@ -334,25 +570,28 @@ public class LoginFrame extends JFrame {
         }
     }
 
-    // =========================
-    // Admin Login
-    // =========================
+    // =====================================================
+    // ADMIN LOGIN
+    // =====================================================
 
     private void adminLogin() {
 
         String username =
-                usernameField.getText().trim();
+                usernameField
+                        .getText()
+                        .trim();
 
         String password =
                 new String(
-                        passwordField.getPassword()
+                        passwordField
+                                .getPassword()
                 );
 
         if (username.isEmpty()
                 || password.isEmpty()) {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Please enter username and password.",
                     "Login Error",
                     JOptionPane.WARNING_MESSAGE
@@ -364,7 +603,7 @@ public class LoginFrame extends JFrame {
         if (manager.getAdmins().isEmpty()) {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "No admin account is available.",
                     "Login Failed",
                     JOptionPane.WARNING_MESSAGE
@@ -375,18 +614,28 @@ public class LoginFrame extends JFrame {
 
         Admin loggedInAdmin = null;
 
-        for (Admin admin : manager.getAdmins()) {
+        for (Admin admin :
+                manager.getAdmins()) {
 
             String savedUsername =
-                    admin.getUsername().trim();
+                    admin.getUsername()
+                            .trim();
 
             String savedPassword =
                     admin.getPassword();
 
-            if (savedUsername.equalsIgnoreCase(username)
-                    && savedPassword.equals(password)) {
+            if (savedUsername
+                    .equalsIgnoreCase(
+                            username
+                    )
+                    &&
+                    savedPassword
+                            .equals(
+                                    password
+                            )) {
 
                 loggedInAdmin = admin;
+
                 break;
             }
         }
@@ -394,26 +643,20 @@ public class LoginFrame extends JFrame {
         if (loggedInAdmin != null) {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Admin login successful.",
                     "Login Successful",
                     JOptionPane.INFORMATION_MESSAGE
             );
 
-            dispose();
-
-            AdminDashboard dashboard =
-                    new AdminDashboard(
-                            manager,
-                            loggedInAdmin
-                    );
-
-            dashboard.setVisible(true);
+            openAdminDashboard(
+                    loggedInAdmin
+            );
 
         } else {
 
             JOptionPane.showMessageDialog(
-                    this,
+                    mainFrame,
                     "Invalid admin username or password.",
                     "Login Failed",
                     JOptionPane.ERROR_MESSAGE
@@ -421,15 +664,129 @@ public class LoginFrame extends JFrame {
         }
     }
 
-    // =========================
-    // Registration
-    // =========================
+    // =====================================================
+    // USER DASHBOARD
+    // =====================================================
+
+    private void openUserDashboard(
+            User user
+    ) {
+
+        UserDashboard dashboard =
+                new UserDashboard(
+                        mainFrame,
+                        manager,
+                        user
+                );
+
+        mainFrame.addScreen(
+                "USER_DASHBOARD",
+                dashboard
+        );
+
+        mainFrame.clearNavigationHistory();
+
+        mainFrame.showScreen(
+                "USER_DASHBOARD"
+        );
+    }
+
+    // =====================================================
+    // ADMIN DASHBOARD
+    // =====================================================
+
+    private void openAdminDashboard(
+            Admin admin
+    ) {
+
+        AdminDashboard dashboard =
+                new AdminDashboard(
+                        mainFrame,
+                        manager,
+                        admin
+                );
+
+        mainFrame.addScreen(
+                "ADMIN_DASHBOARD",
+                dashboard
+        );
+
+        mainFrame.clearNavigationHistory();
+
+        mainFrame.showScreen(
+                "ADMIN_DASHBOARD"
+        );
+    }
+
+    // =====================================================
+    // REGISTRATION
+    // =====================================================
 
     private void openRegistration() {
 
         RegistrationFrame registrationFrame =
-                new RegistrationFrame(manager);
+                new RegistrationFrame(
+                        manager
+                );
 
-        registrationFrame.setVisible(true);
+        registrationFrame.setVisible(
+                true
+        );
+    }
+
+    // =====================================================
+    // PRIMARY BUTTON
+    // =====================================================
+
+    private void stylePrimaryButton(
+            JButton button) {
+
+        button.setBackground(
+                Color.decode("#F5CB5C")
+        );
+
+        button.setForeground(
+                Color.decode("#242423")
+        );
+
+        button.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        13
+                )
+        );
+
+        button.setFocusPainted(
+                false
+        );
+    }
+
+    // =====================================================
+    // SECONDARY BUTTON
+    // =====================================================
+
+    private void styleSecondaryButton(
+            JButton button) {
+
+        button.setBackground(
+                Color.decode("#333533")
+        );
+
+        button.setForeground(
+                Color.WHITE
+        );
+
+        button.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        13
+                )
+        );
+
+        button.setFocusPainted(
+                false
+        );
     }
 }

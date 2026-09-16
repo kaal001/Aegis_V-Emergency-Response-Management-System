@@ -2,62 +2,64 @@ package gui;
 
 import enums.EmergencyStatus;
 import enums.EmergencyType;
-import enums.Priority;
 import manager.EmergencyManager;
+import model.Assignment;
 import model.Emergency;
 import model.ResponseTeam;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class TeamAssignmentFrame extends JFrame {
+public class TeamAssignmentFrame extends JPanel {
 
+    private MainFrame mainFrame;
     private EmergencyManager manager;
 
-    private JTable emergencyTable;
-    private DefaultTableModel emergencyTableModel;
+    private JTable assignmentTable;
+    private DefaultTableModel assignmentTableModel;
 
-    private JComboBox<String> teamComboBox;
-
-    private JLabel emergencyInfoLabel;
-    private JLabel requiredTeamLabel;
-    private JLabel selectedTeamLabel;
-
-    private Emergency selectedEmergency;
+    private JTextField searchField;
 
     public TeamAssignmentFrame(
+            MainFrame mainFrame,
             EmergencyManager manager) {
 
+        this.mainFrame = mainFrame;
         this.manager = manager;
 
-        setTitle(
-                "Team Assignment - Emergency Response Management System"
-        );
-
-        setSize(950, 650);
-
-        setDefaultCloseOperation(
-                JFrame.DISPOSE_ON_CLOSE
-        );
-
-        setLocationRelativeTo(null);
-        setResizable(false);
-
         createUI();
-
-        loadPendingEmergencies();
+        loadAssignments();
     }
 
+    // =========================================
+    // CREATE UI
+    // =========================================
+
     private void createUI() {
+
+        setLayout(
+                new BorderLayout()
+        );
+
+        setBackground(
+                Color.decode("#E8EDDF")
+        );
+
+        // =========================================
+        // MAIN PANEL
+        // =========================================
 
         JPanel mainPanel =
                 new JPanel(
                         new BorderLayout(
-                                10, 10
+                                10,
+                                10
                         )
                 );
 
@@ -67,18 +69,29 @@ public class TeamAssignmentFrame extends JFrame {
 
         mainPanel.setBorder(
                 BorderFactory.createEmptyBorder(
-                        15, 15, 15, 15
+                        15,
+                        15,
+                        15,
+                        15
                 )
         );
 
-        // =========================
-        // Header
-        // =========================
+        // =========================================
+        // HEADER
+        // =========================================
+
+        JPanel headerPanel =
+                new JPanel(
+                        new BorderLayout()
+                );
+
+        headerPanel.setBackground(
+                Color.decode("#E8EDDF")
+        );
 
         JLabel titleLabel =
                 new JLabel(
-                        "TEAM ASSIGNMENT",
-                        SwingConstants.CENTER
+                        "ASSIGNMENT MANAGEMENT"
                 );
 
         titleLabel.setFont(
@@ -93,30 +106,90 @@ public class TeamAssignmentFrame extends JFrame {
                 Color.decode("#242423")
         );
 
-        titleLabel.setBorder(
-                BorderFactory.createEmptyBorder(
-                        10, 10, 15, 10
+        headerPanel.add(
+                titleLabel,
+                BorderLayout.WEST
+        );
+
+        // =========================================
+        // SEARCH PANEL
+        // =========================================
+
+        JPanel searchPanel =
+                new JPanel(
+                        new FlowLayout(
+                                FlowLayout.RIGHT,
+                                8,
+                                0
+                        )
+                );
+
+        searchPanel.setBackground(
+                Color.decode("#E8EDDF")
+        );
+
+        JLabel searchLabel =
+                new JLabel(
+                        "Search:"
+                );
+
+        searchLabel.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        12
                 )
         );
 
+        searchField =
+                new JTextField(
+                        18
+                );
+
+        JButton refreshButton =
+                new JButton(
+                        "REFRESH"
+                );
+
+        stylePrimaryButton(
+                refreshButton
+        );
+
+        searchPanel.add(
+                searchLabel
+        );
+
+        searchPanel.add(
+                searchField
+        );
+
+        searchPanel.add(
+                refreshButton
+        );
+
+        headerPanel.add(
+                searchPanel,
+                BorderLayout.EAST
+        );
+
         mainPanel.add(
-                titleLabel,
+                headerPanel,
                 BorderLayout.NORTH
         );
 
-        // =========================
-        // Emergency Table
-        // =========================
+        // =========================================
+        // TABLE
+        // =========================================
 
         String[] columns = {
+                "Assignment ID",
                 "Emergency ID",
-                "Type",
-                "Priority",
-                "Location",
-                "Status"
+                "Team ID",
+                "Assigned Time",
+                "Notes"
         };
 
-        emergencyTableModel =
+        assignmentTableModel =
                 new DefaultTableModel(
                         columns,
                         0
@@ -131,14 +204,20 @@ public class TeamAssignmentFrame extends JFrame {
                     }
                 };
 
-        emergencyTable =
+        assignmentTable =
                 new JTable(
-                        emergencyTableModel
+                        assignmentTableModel
                 );
 
-        emergencyTable.setRowHeight(28);
+        assignmentTable.setRowHeight(
+                28
+        );
 
-        emergencyTable.getTableHeader()
+        assignmentTable.setSelectionMode(
+                ListSelectionModel.SINGLE_SELECTION
+        );
+
+        assignmentTable.getTableHeader()
                 .setFont(
                         new Font(
                                 "Arial",
@@ -147,98 +226,71 @@ public class TeamAssignmentFrame extends JFrame {
                         )
                 );
 
-        emergencyTable.setSelectionMode(
-                ListSelectionModel.SINGLE_SELECTION
-        );
+        assignmentTable.getColumnModel()
+                .getColumn(0)
+                .setPreferredWidth(110);
+
+        assignmentTable.getColumnModel()
+                .getColumn(1)
+                .setPreferredWidth(110);
+
+        assignmentTable.getColumnModel()
+                .getColumn(2)
+                .setPreferredWidth(110);
+
+        assignmentTable.getColumnModel()
+                .getColumn(3)
+                .setPreferredWidth(150);
+
+        assignmentTable.getColumnModel()
+                .getColumn(4)
+                .setPreferredWidth(250);
 
         JScrollPane tableScrollPane =
                 new JScrollPane(
-                        emergencyTable
+                        assignmentTable
                 );
 
-        // =========================
-        // Assignment Panel
-        // =========================
+        mainPanel.add(
+                tableScrollPane,
+                BorderLayout.CENTER
+        );
 
-        JPanel assignmentPanel =
+        // =========================================
+        // BUTTON PANEL
+        // =========================================
+
+        JPanel buttonPanel =
                 new JPanel(
-                        new BorderLayout(
-                                10, 10
+                        new FlowLayout(
+                                FlowLayout.CENTER,
+                                12,
+                                8
                         )
                 );
 
-        assignmentPanel.setBackground(
+        buttonPanel.setBackground(
                 Color.decode("#CFDBD5")
         );
 
-        assignmentPanel.setBorder(
-                BorderFactory.createEmptyBorder(
-                        15, 15, 15, 15
-                )
-        );
-
-        // =========================
-        // Emergency Information
-        // =========================
-
-        emergencyInfoLabel =
-                new JLabel(
-                        "Select an emergency from the table."
-                );
-
-        emergencyInfoLabel.setFont(
-                new Font(
-                        "Arial",
-                        Font.BOLD,
-                        14
-                )
-        );
-
-        emergencyInfoLabel.setForeground(
-                Color.decode("#242423")
-        );
-
-        assignmentPanel.add(
-                emergencyInfoLabel,
-                BorderLayout.NORTH
-        );
-
-        // =========================
-        // Team Selection
-        // =========================
-
-        JPanel teamPanel =
-                new JPanel(
-                        new GridLayout(
-                                3, 2, 10, 10
-                        )
-                );
-
-        teamPanel.setBackground(
-                Color.decode("#CFDBD5")
-        );
-
-        requiredTeamLabel =
-                new JLabel(
-                        "Required Team: -"
-                );
-
-        teamComboBox =
-                new JComboBox<>();
-
-        selectedTeamLabel =
-                new JLabel(
-                        "Selected Team: None"
-                );
-
-        JButton refreshTeamsButton =
+        JButton addButton =
                 new JButton(
-                        "REFRESH TEAMS"
+                        "ADD"
                 );
 
-        JButton assignButton =
+        JButton updateButton =
                 new JButton(
-                        "ASSIGN TEAM"
+                        "UPDATE"
+                );
+
+        JButton deleteButton =
+                new JButton(
+                        "DELETE"
+                );
+
+        JButton refreshAllButton =
+                new JButton(
+                        "REFRESH"
                 );
 
         JButton backButton =
@@ -247,494 +299,433 @@ public class TeamAssignmentFrame extends JFrame {
                 );
 
         stylePrimaryButton(
-                refreshTeamsButton
+                addButton
         );
 
         stylePrimaryButton(
-                assignButton
+                updateButton
+        );
+
+        stylePrimaryButton(
+                deleteButton
+        );
+
+        stylePrimaryButton(
+                refreshAllButton
         );
 
         styleSecondaryButton(
                 backButton
         );
 
-        teamPanel.add(
-                new JLabel(
-                        "Required Team Type:"
-                )
-        );
-
-        teamPanel.add(
-                requiredTeamLabel
-        );
-
-        teamPanel.add(
-                new JLabel(
-                        "Available Suitable Teams:"
-                )
-        );
-
-        teamPanel.add(
-                teamComboBox
-        );
-
-        teamPanel.add(
-                new JLabel(
-                        "Selected:"
-                )
-        );
-
-        teamPanel.add(
-                selectedTeamLabel
-        );
-
-        assignmentPanel.add(
-                teamPanel,
-                BorderLayout.CENTER
-        );
-
-        // =========================
-        // Bottom Buttons
-        // =========================
-
-        JPanel buttonPanel =
-                new JPanel(
-                        new FlowLayout(
-                                FlowLayout.CENTER,
-                                12,
-                                5
-                        )
-                );
-
-        buttonPanel.setBackground(
-                Color.decode("#E8EDDF")
+        buttonPanel.add(
+                addButton
         );
 
         buttonPanel.add(
-                refreshTeamsButton
+                updateButton
         );
 
         buttonPanel.add(
-                assignButton
+                deleteButton
+        );
+
+        buttonPanel.add(
+                refreshAllButton
         );
 
         buttonPanel.add(
                 backButton
         );
 
-        assignmentPanel.add(
+        mainPanel.add(
                 buttonPanel,
                 BorderLayout.SOUTH
         );
 
-        // =========================
-        // Main Center
-        // =========================
+        // =========================================
+        // EVENTS
+        // =========================================
 
-        JPanel centerPanel =
-                new JPanel(
-                        new BorderLayout(
-                                10, 10
-                        )
-                );
-
-        centerPanel.setBackground(
-                Color.decode("#E8EDDF")
+        addButton.addActionListener(
+                e -> addAssignment()
         );
 
-        centerPanel.add(
-                tableScrollPane,
-                BorderLayout.CENTER
+        updateButton.addActionListener(
+                e -> updateAssignment()
         );
 
-        centerPanel.add(
-                assignmentPanel,
-                BorderLayout.SOUTH
+        deleteButton.addActionListener(
+                e -> deleteAssignment()
         );
 
-        mainPanel.add(
-                centerPanel,
-                BorderLayout.CENTER
+        refreshButton.addActionListener(
+                e -> loadAssignments()
         );
 
-        // =========================
-        // Events
-        // =========================
-
-        emergencyTable
-                .getSelectionModel()
-                .addListSelectionListener(e -> {
-
-                    if (!e.getValueIsAdjusting()) {
-                        selectEmergency();
-                    }
-                });
-
-        teamComboBox.addActionListener(
-                e -> updateSelectedTeamLabel()
-        );
-
-        refreshTeamsButton.addActionListener(
-                e -> loadSuitableTeams()
-        );
-
-        assignButton.addActionListener(
-                e -> assignTeam()
+        refreshAllButton.addActionListener(
+                e -> loadAssignments()
         );
 
         backButton.addActionListener(
-                e -> dispose()
+                e -> mainFrame.goBack()
         );
 
-        add(mainPanel);
+        // =========================================
+        // LIVE SEARCH
+        // =========================================
+
+        searchField.getDocument()
+                .addDocumentListener(
+                        new DocumentListener() {
+
+                            @Override
+                            public void insertUpdate(
+                                    DocumentEvent e) {
+
+                                performSearch();
+                            }
+
+                            @Override
+                            public void removeUpdate(
+                                    DocumentEvent e) {
+
+                                performSearch();
+                            }
+
+                            @Override
+                            public void changedUpdate(
+                                    DocumentEvent e) {
+
+                                performSearch();
+                            }
+                        }
+                );
+
+        // =========================================
+        // ADD TO PANEL
+        // =========================================
+
+        add(
+                mainPanel,
+                BorderLayout.CENTER
+        );
     }
 
-    // =========================
-    // Load Pending Emergencies
-    // =========================
+    // =========================================
+    // LOAD ASSIGNMENTS
+    // =========================================
 
-    private void loadPendingEmergencies() {
+    private void loadAssignments() {
 
-        emergencyTableModel.setRowCount(0);
+        assignmentTableModel.setRowCount(
+                0
+        );
 
-        ArrayList<Emergency> pendingEmergencies =
-                new ArrayList<>();
-
-        for (Emergency emergency :
-                manager.getAllEmergencies()) {
-
-            if (emergency.getStatus()
-                    == EmergencyStatus.PENDING) {
-
-                pendingEmergencies.add(
-                        emergency
+        ArrayList<Assignment> assignments =
+                new ArrayList<>(
+                        manager.getAllAssignments()
                 );
-            }
+
+        for (Assignment assignment :
+                assignments) {
+
+            assignmentTableModel.addRow(
+                    new Object[]{
+                            assignment.getAssignmentId(),
+                            assignment.getEmergencyId(),
+                            assignment.getTeamId(),
+                            assignment.getAssignedTime(),
+                            assignment.getNotes()
+                    }
+            );
+        }
+    }
+
+    // =========================================
+    // SEARCH
+    // =========================================
+
+    private void performSearch() {
+
+        String keyword =
+                searchField.getText()
+                        .trim();
+
+        assignmentTableModel.setRowCount(
+                0
+        );
+
+        ArrayList<Assignment> assignments;
+
+        if (keyword.isEmpty()) {
+
+            assignments =
+                    new ArrayList<>(
+                            manager.getAllAssignments()
+                    );
+
+        } else {
+
+            assignments =
+                    new ArrayList<>(
+                            manager.searchAssignments(
+                                    keyword
+                            )
+                    );
         }
 
-        sortByPriority(
-                pendingEmergencies
-        );
+        for (Assignment assignment :
+                assignments) {
+
+            assignmentTableModel.addRow(
+                    new Object[]{
+                            assignment.getAssignmentId(),
+                            assignment.getEmergencyId(),
+                            assignment.getTeamId(),
+                            assignment.getAssignedTime(),
+                            assignment.getNotes()
+                    }
+            );
+        }
+    }
+
+    // =========================================
+    // ADD ASSIGNMENT
+    // =========================================
+
+    private void addAssignment() {
+
+        ArrayList<Emergency> pendingEmergencies =
+                getPendingEmergencies();
+
+        if (pendingEmergencies.isEmpty()) {
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "There are no pending emergencies available.",
+                    "Add Assignment",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            return;
+        }
+
+        JComboBox<String> emergencyComboBox =
+                new JComboBox<>();
 
         for (Emergency emergency :
                 pendingEmergencies) {
 
-            emergencyTableModel.addRow(
-                    new Object[]{
-                            emergency.getEmergencyId(),
-                            formatEmergencyType(
-                                    emergency.getType()
-                            ),
-                            formatPriority(
-                                    emergency.getPriority()
-                            ),
-                            emergency.getLocation(),
-                            formatStatus(
-                                    emergency.getStatus()
-                            )
+            emergencyComboBox.addItem(
+                    emergency.getEmergencyId()
+                            + " - "
+                            + formatEmergencyType(
+                            emergency.getType()
+                    )
+                            + " - "
+                            + emergency.getLocation()
+            );
+        }
+
+        JComboBox<String> teamComboBox =
+                new JComboBox<>();
+
+        JTextField timeField =
+                new JTextField(
+                        getCurrentDateTime()
+                );
+
+        JTextField notesField =
+                new JTextField();
+
+        JPanel panel =
+                new JPanel(
+                        new GridLayout(
+                                4,
+                                2,
+                                8,
+                                8
+                        )
+                );
+
+        panel.setPreferredSize(
+                new Dimension(
+                        500,
+                        150
+                )
+        );
+
+        panel.add(
+                new JLabel(
+                        "Emergency:"
+                )
+        );
+
+        panel.add(
+                emergencyComboBox
+        );
+
+        panel.add(
+                new JLabel(
+                        "Suitable Team:"
+                )
+        );
+
+        panel.add(
+                teamComboBox
+        );
+
+        panel.add(
+                new JLabel(
+                        "Assigned Time:"
+                )
+        );
+
+        panel.add(
+                timeField
+        );
+
+        panel.add(
+                new JLabel(
+                        "Notes:"
+                )
+        );
+
+        panel.add(
+                notesField
+        );
+
+        Runnable loadTeams =
+                () -> {
+
+                    teamComboBox.removeAllItems();
+
+                    int selectedIndex =
+                            emergencyComboBox
+                                    .getSelectedIndex();
+
+                    if (selectedIndex < 0) {
+
+                        return;
                     }
-            );
-        }
 
-        selectedEmergency = null;
+                    Emergency emergency =
+                            pendingEmergencies
+                                    .get(selectedIndex);
 
-        emergencyInfoLabel.setText(
-                "Select an emergency from the table."
-        );
+                    ArrayList<ResponseTeam> teams =
+                            manager.findSuitableTeams(
+                                    emergency
+                            );
 
-        requiredTeamLabel.setText(
-                "Required Team: -"
-        );
+                    for (ResponseTeam team :
+                            teams) {
 
-        teamComboBox.removeAllItems();
-
-        selectedTeamLabel.setText(
-                "Selected Team: None"
-        );
-    }
-
-    // =========================
-    // Sort By Priority
-    // =========================
-
-    private void sortByPriority(
-            ArrayList<Emergency> emergencies) {
-
-        for (int i = 0;
-             i < emergencies.size() - 1;
-             i++) {
-
-            for (int j = 0;
-                 j < emergencies.size() - 1 - i;
-                 j++) {
-
-                int firstPriority =
-                        getPriorityRank(
-                                emergencies.get(j)
-                                        .getPriority()
+                        teamComboBox.addItem(
+                                team.getTeamId()
+                                        + " - "
+                                        + team.getTeamName()
                         );
+                    }
+                };
 
-                int secondPriority =
-                        getPriorityRank(
-                                emergencies.get(j + 1)
-                                        .getPriority()
-                        );
+        emergencyComboBox.addActionListener(
+                e -> loadTeams.run()
+        );
 
-                if (firstPriority >
-                        secondPriority) {
+        loadTeams.run();
 
-                    Emergency temp =
-                            emergencies.get(j);
+        int result =
+                JOptionPane.showConfirmDialog(
+                        mainFrame,
+                        panel,
+                        "Add Assignment",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.PLAIN_MESSAGE
+                );
 
-                    emergencies.set(
-                            j,
-                            emergencies.get(j + 1)
-                    );
+        if (result !=
+                JOptionPane.OK_OPTION) {
 
-                    emergencies.set(
-                            j + 1,
-                            temp
-                    );
-                }
-            }
+            return;
         }
-    }
 
-    // =========================
-    // Priority Rank
-    // =========================
+        // =========================================
+        // VALIDATION
+        // =========================================
 
-    private int getPriorityRank(
-            Priority priority) {
+        if (emergencyComboBox
+                .getSelectedIndex() < 0) {
 
-        if (priority == Priority.CRITICAL) {
-            return 1;
-
-        } else if (priority == Priority.HIGH) {
-            return 2;
-
-        } else if (priority == Priority.MEDIUM) {
-            return 3;
-
-        } else {
-            return 4;
-        }
-    }
-
-    // =========================
-    // Select Emergency
-    // =========================
-
-    private void selectEmergency() {
-
-        int selectedRow =
-                emergencyTable.getSelectedRow();
-
-        if (selectedRow == -1) {
-
-            selectedEmergency = null;
-
-            emergencyInfoLabel.setText(
-                    "Select an emergency from the table."
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Please select an emergency.",
+                    "Validation Error",
+                    JOptionPane.WARNING_MESSAGE
             );
 
-            requiredTeamLabel.setText(
-                    "Required Team: -"
+            return;
+        }
+
+        if (teamComboBox
+                .getSelectedIndex() < 0) {
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "No suitable available team is selected.",
+                    "Validation Error",
+                    JOptionPane.WARNING_MESSAGE
             );
 
-            teamComboBox.removeAllItems();
+            return;
+        }
 
-            selectedTeamLabel.setText(
-                    "Selected Team: None"
+        String assignedTime =
+                timeField.getText()
+                        .trim();
+
+        if (assignedTime.isEmpty()) {
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Assigned time cannot be empty.",
+                    "Validation Error",
+                    JOptionPane.WARNING_MESSAGE
             );
 
             return;
         }
 
         String emergencyId =
-                emergencyTableModel
-                        .getValueAt(
-                                selectedRow,
-                                0
+                pendingEmergencies
+                        .get(
+                                emergencyComboBox
+                                        .getSelectedIndex()
                         )
-                        .toString();
+                        .getEmergencyId();
 
-        selectedEmergency =
-                manager.findEmergencyById(
-                        emergencyId
-                );
-
-        if (selectedEmergency == null) {
-            return;
-        }
-
-        emergencyInfoLabel.setText(
-                "Selected Emergency: "
-                        + selectedEmergency.getEmergencyId()
-                        + " | "
-                        + formatEmergencyType(
-                        selectedEmergency.getType()
-                )
-                        + " | "
-                        + formatPriority(
-                        selectedEmergency.getPriority()
-                )
-        );
-
-        String requiredTeam =
-                formatTeamType(
-                        manager.getRequiredTeamType(
-                                selectedEmergency.getType()
-                        )
-                );
-
-        requiredTeamLabel.setText(
-                "Required Team: "
-                        + requiredTeam
-        );
-
-        loadSuitableTeams();
-    }
-
-    // =========================
-    // Load Suitable Teams
-    // =========================
-
-    private void loadSuitableTeams() {
-
-        teamComboBox.removeAllItems();
-
-        selectedTeamLabel.setText(
-                "Selected Team: None"
-        );
-
-        if (selectedEmergency == null) {
-            return;
-        }
-
-        ArrayList<ResponseTeam> teams =
-                manager.findSuitableTeams(
-                        selectedEmergency
-                );
-
-        if (teams.isEmpty()) {
-
-            teamComboBox.addItem(
-                    "No suitable team available"
-            );
-
-            return;
-        }
-
-        for (ResponseTeam team : teams) {
-
-            String item =
-                    team.getTeamId()
-                            + " - "
-                            + team.getTeamName();
-
-            teamComboBox.addItem(item);
-        }
-    }
-
-    // =========================
-    // Selected Team Label
-    // =========================
-
-    private void updateSelectedTeamLabel() {
-
-        if (teamComboBox.getSelectedItem()
-                == null) {
-
-            selectedTeamLabel.setText(
-                    "Selected Team: None"
-            );
-
-            return;
-        }
-
-        String selected =
+        String selectedTeam =
                 teamComboBox
                         .getSelectedItem()
                         .toString();
-
-        if (selected.startsWith(
-                "No suitable team")) {
-
-            selectedTeamLabel.setText(
-                    "Selected Team: None"
-            );
-
-            return;
-        }
-
-        selectedTeamLabel.setText(
-                "Selected Team: " + selected
-        );
-    }
-
-    // =========================
-    // Assign Team
-    // =========================
-
-    private void assignTeam() {
-
-        if (selectedEmergency == null) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Please select an emergency first.",
-                    "No Emergency Selected",
-                    JOptionPane.WARNING_MESSAGE
-            );
-
-            return;
-        }
-
-        if (teamComboBox.getSelectedItem()
-                == null) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "No suitable team is available.",
-                    "Assignment Failed",
-                    JOptionPane.WARNING_MESSAGE
-            );
-
-            return;
-        }
-
-        String selected =
-                teamComboBox
-                        .getSelectedItem()
-                        .toString();
-
-        if (selected.startsWith(
-                "No suitable team")) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "No suitable team is currently available.",
-                    "Assignment Failed",
-                    JOptionPane.WARNING_MESSAGE
-            );
-
-            return;
-        }
 
         String teamId =
-                selected.split(" - ")[0];
+                selectedTeam.split(
+                        " - ",
+                        2
+                )[0];
 
-        String assignedTime =
-                new SimpleDateFormat(
-                        "yyyy-MM-dd HH:mm"
-                ).format(new Date());
+        String notes =
+                notesField.getText()
+                        .trim();
 
         boolean success =
-                manager.assignTeam(
-                        selectedEmergency.getEmergencyId(),
+                manager.addAssignment(
+                        emergencyId,
                         teamId,
-                        assignedTime
+                        assignedTime,
+                        notes
                 );
 
         if (success) {
@@ -742,143 +733,646 @@ public class TeamAssignmentFrame extends JFrame {
             manager.saveData();
 
             JOptionPane.showMessageDialog(
-                    this,
-                    "Team assigned successfully.\n\n"
-                            + "Emergency: "
-                            + selectedEmergency.getEmergencyId()
-                            + "\nTeam: "
-                            + teamId
-                            + "\nStatus: Assigned",
-                    "Assignment Successful",
+                    mainFrame,
+                    "Assignment added successfully.",
+                    "Success",
                     JOptionPane.INFORMATION_MESSAGE
             );
 
-            loadPendingEmergencies();
+            loadAssignments();
 
         } else {
 
             JOptionPane.showMessageDialog(
-                    this,
-                    "Unable to assign the selected team.",
-                    "Assignment Failed",
+                    mainFrame,
+                    "Unable to create the assignment.\n"
+                            + "Check emergency status, team availability, "
+                            + "and team suitability.",
+                    "Add Assignment Failed",
                     JOptionPane.ERROR_MESSAGE
             );
         }
     }
 
-    // =========================
-    // Formatting
-    // =========================
+    // =========================================
+    // UPDATE ASSIGNMENT
+    // =========================================
+
+    private void updateAssignment() {
+
+        int selectedRow =
+                assignmentTable.getSelectedRow();
+
+        if (selectedRow == -1) {
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Please select an assignment first.",
+                    "Update Assignment",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            return;
+        }
+
+        String assignmentId =
+                assignmentTableModel
+                        .getValueAt(
+                                selectedRow,
+                                0
+                        )
+                        .toString();
+
+        Assignment assignment =
+                manager.findAssignmentById(
+                        assignmentId
+                );
+
+        if (assignment == null) {
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Assignment not found.",
+                    "Update Assignment",
+                    JOptionPane.ERROR_MESSAGE
+            );
+
+            return;
+        }
+
+        Emergency currentEmergency =
+                manager.findEmergencyById(
+                        assignment.getEmergencyId()
+                );
+
+        if (currentEmergency == null) {
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "The emergency connected to this assignment could not be found.",
+                    "Update Assignment",
+                    JOptionPane.ERROR_MESSAGE
+            );
+
+            return;
+        }
+
+        ArrayList<Emergency> emergencies =
+                getUpdateEmergencyList(
+                        currentEmergency
+                );
+
+        JComboBox<String> emergencyComboBox =
+                new JComboBox<>();
+
+        int currentEmergencyIndex =
+                0;
+
+        for (int i = 0;
+             i < emergencies.size();
+             i++) {
+
+            Emergency emergency =
+                    emergencies.get(i);
+
+            emergencyComboBox.addItem(
+                    emergency.getEmergencyId()
+                            + " - "
+                            + formatEmergencyType(
+                            emergency.getType()
+                    )
+                            + " - "
+                            + emergency.getLocation()
+            );
+
+            if (emergency.getEmergencyId()
+                    .equals(
+                            assignment.getEmergencyId()
+                    )) {
+
+                currentEmergencyIndex =
+                        i;
+            }
+        }
+
+        emergencyComboBox.setSelectedIndex(
+                currentEmergencyIndex
+        );
+
+        JComboBox<String> teamComboBox =
+                new JComboBox<>();
+
+        JTextField timeField =
+                new JTextField(
+                        assignment.getAssignedTime()
+                );
+
+        JTextField notesField =
+                new JTextField(
+                        assignment.getNotes()
+                );
+
+        JPanel panel =
+                new JPanel(
+                        new GridLayout(
+                                4,
+                                2,
+                                8,
+                                8
+                        )
+                );
+
+        panel.setPreferredSize(
+                new Dimension(
+                        500,
+                        150
+                )
+        );
+
+        panel.add(
+                new JLabel(
+                        "Emergency:"
+                )
+        );
+
+        panel.add(
+                emergencyComboBox
+        );
+
+        panel.add(
+                new JLabel(
+                        "Suitable Team:"
+                )
+        );
+
+        panel.add(
+                teamComboBox
+        );
+
+        panel.add(
+                new JLabel(
+                        "Assigned Time:"
+                )
+        );
+
+        panel.add(
+                timeField
+        );
+
+        panel.add(
+                new JLabel(
+                        "Notes:"
+                )
+        );
+
+        panel.add(
+                notesField
+        );
+
+        Runnable loadUpdateTeams =
+                () -> {
+
+                    teamComboBox.removeAllItems();
+
+                    int selectedIndex =
+                            emergencyComboBox
+                                    .getSelectedIndex();
+
+                    if (selectedIndex < 0) {
+
+                        return;
+                    }
+
+                    Emergency emergency =
+                            emergencies
+                                    .get(selectedIndex);
+
+                    ArrayList<ResponseTeam> teams =
+                            manager.findSuitableTeams(
+                                    emergency
+                            );
+
+                    /*
+                     * The currently assigned team can remain
+                     * selected during an update because it is
+                     * already occupied by this assignment.
+                     */
+                    ResponseTeam currentTeam =
+                            manager.findTeamById(
+                                    assignment.getTeamId()
+                            );
+
+                    if (currentTeam != null) {
+
+                        boolean alreadyExists =
+                                false;
+
+                        for (ResponseTeam team :
+                                teams) {
+
+                            if (team.getTeamId()
+                                    .equals(
+                                            currentTeam.getTeamId()
+                                    )) {
+
+                                alreadyExists =
+                                        true;
+
+                                break;
+                            }
+                        }
+
+                        if (!alreadyExists &&
+                                emergency.getEmergencyId()
+                                        .equals(
+                                                currentEmergency
+                                                        .getEmergencyId()
+                                        )) {
+
+                            teams.add(
+                                    currentTeam
+                            );
+                        }
+                    }
+
+                    for (ResponseTeam team :
+                            teams) {
+
+                        teamComboBox.addItem(
+                                team.getTeamId()
+                                        + " - "
+                                        + team.getTeamName()
+                        );
+                    }
+
+                    for (int i = 0;
+                         i < teamComboBox.getItemCount();
+                         i++) {
+
+                        String item =
+                                teamComboBox
+                                        .getItemAt(i);
+
+                        if (item.startsWith(
+                                assignment.getTeamId()
+                                        + " - "
+                        )) {
+
+                            teamComboBox.setSelectedIndex(
+                                    i
+                            );
+
+                            break;
+                        }
+                    }
+                };
+
+        emergencyComboBox.addActionListener(
+                e -> loadUpdateTeams.run()
+        );
+
+        loadUpdateTeams.run();
+
+        int result =
+                JOptionPane.showConfirmDialog(
+                        mainFrame,
+                        panel,
+                        "Update Assignment",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.PLAIN_MESSAGE
+                );
+
+        if (result !=
+                JOptionPane.OK_OPTION) {
+
+            return;
+        }
+
+        // =========================================
+        // VALIDATION
+        // =========================================
+
+        if (emergencyComboBox
+                .getSelectedIndex() < 0) {
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Please select an emergency.",
+                    "Validation Error",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            return;
+        }
+
+        if (teamComboBox
+                .getSelectedIndex() < 0) {
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Please select a suitable team.",
+                    "Validation Error",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            return;
+        }
+
+        String assignedTime =
+                timeField.getText()
+                        .trim();
+
+        if (assignedTime.isEmpty()) {
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Assigned time cannot be empty.",
+                    "Validation Error",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            return;
+        }
+
+        String newEmergencyId =
+                emergencies
+                        .get(
+                                emergencyComboBox
+                                        .getSelectedIndex()
+                        )
+                        .getEmergencyId();
+
+        String selectedTeam =
+                teamComboBox
+                        .getSelectedItem()
+                        .toString();
+
+        String newTeamId =
+                selectedTeam.split(
+                        " - ",
+                        2
+                )[0];
+
+        String notes =
+                notesField.getText()
+                        .trim();
+
+        boolean success =
+                manager.updateAssignment(
+                        assignmentId,
+                        newEmergencyId,
+                        newTeamId,
+                        assignedTime,
+                        notes
+                );
+
+        if (success) {
+
+            manager.saveData();
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Assignment updated successfully.",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+
+            loadAssignments();
+
+        } else {
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Unable to update the assignment.\n"
+                            + "Make sure the selected emergency is valid "
+                            + "and the team is suitable and available.",
+                    "Update Assignment Failed",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    // =========================================
+    // DELETE ASSIGNMENT
+    // =========================================
+
+    private void deleteAssignment() {
+
+        int selectedRow =
+                assignmentTable.getSelectedRow();
+
+        if (selectedRow == -1) {
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Please select an assignment first.",
+                    "Delete Assignment",
+                    JOptionPane.WARNING_MESSAGE
+            );
+
+            return;
+        }
+
+        String assignmentId =
+                assignmentTableModel
+                        .getValueAt(
+                                selectedRow,
+                                0
+                        )
+                        .toString();
+
+        int choice =
+                JOptionPane.showConfirmDialog(
+                        mainFrame,
+                        "Are you sure you want to delete assignment "
+                                + assignmentId
+                                + "?\n\n"
+                                + "The assigned team will be released "
+                                + "and the emergency will return to Pending.",
+                        "Confirm Delete",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.WARNING_MESSAGE
+                );
+
+        if (choice !=
+                JOptionPane.YES_OPTION) {
+
+            return;
+        }
+
+        boolean success =
+                manager.removeAssignment(
+                        assignmentId
+                );
+
+        if (success) {
+
+            manager.saveData();
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Assignment deleted successfully.",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+
+            loadAssignments();
+
+        } else {
+
+            JOptionPane.showMessageDialog(
+                    mainFrame,
+                    "Assignment could not be deleted.\n"
+                            + "Only an active Assigned assignment "
+                            + "can be removed.",
+                    "Delete Assignment Failed",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+
+    // =========================================
+    // GET PENDING EMERGENCIES
+    // =========================================
+
+    private ArrayList<Emergency>
+    getPendingEmergencies() {
+
+        ArrayList<Emergency> result =
+                new ArrayList<>();
+
+        ArrayList<Emergency> emergencies =
+                new ArrayList<>(
+                        manager.getAllEmergencies()
+                );
+
+        for (Emergency emergency :
+                emergencies) {
+
+            if (emergency.getStatus()
+                    == EmergencyStatus.PENDING) {
+
+                result.add(
+                        emergency
+                );
+            }
+        }
+
+        return result;
+    }
+
+    // =========================================
+    // GET UPDATE EMERGENCIES
+    // =========================================
+
+    private ArrayList<Emergency>
+    getUpdateEmergencyList(
+            Emergency currentEmergency) {
+
+        ArrayList<Emergency> result =
+                new ArrayList<>();
+
+        ArrayList<Emergency> emergencies =
+                new ArrayList<>(
+                        manager.getAllEmergencies()
+                );
+
+        for (Emergency emergency :
+                emergencies) {
+
+            if (emergency.getEmergencyId()
+                    .equals(
+                            currentEmergency
+                                    .getEmergencyId()
+                    )) {
+
+                result.add(
+                        emergency
+                );
+
+            } else if (emergency.getStatus()
+                    == EmergencyStatus.PENDING) {
+
+                result.add(
+                        emergency
+                );
+            }
+        }
+
+        return result;
+    }
+
+    // =========================================
+    // CURRENT DATE / TIME
+    // =========================================
+
+    private String getCurrentDateTime() {
+
+        return new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm"
+        ).format(
+                new Date()
+        );
+    }
+
+    // =========================================
+    // FORMAT EMERGENCY TYPE
+    // =========================================
 
     private String formatEmergencyType(
             EmergencyType type) {
 
-        if (type ==
-                EmergencyType.MEDICAL) {
+        if (type == null) {
 
-            return "Medical Emergency";
+            return "Unknown";
+        }
 
-        } else if (type ==
-                EmergencyType.FIRE) {
+        switch (type) {
 
-            return "Fire Emergency";
+            case MEDICAL:
+                return "Medical Emergency";
 
-        } else if (
-                type == EmergencyType.ROAD_ACCIDENT) {
+            case FIRE:
+                return "Fire Emergency";
 
-            return "Road Accident";
+            case ROAD_ACCIDENT:
+                return "Road Accident";
 
-        } else if (
-                type == EmergencyType.SECURITY) {
+            case SECURITY:
+                return "Security Emergency";
 
-            return "Security Emergency";
+            case NATURAL_DISASTER:
+                return "Natural Disaster";
 
-        } else {
+            case GAS_LEAK:
+                return "Gas Leak";
 
-            return "Natural Disaster";
+            case ELECTRICAL_EMERGENCY:
+                return "Electrical Emergency";
+
+            case BUILDING_COLLAPSE:
+                return "Building Collapse";
+
+            case INDUSTRIAL_ACCIDENT:
+                return "Industrial Accident";
+
+            case MISSING_PERSON:
+                return "Missing Person";
+
+            case WATER_FLOOD_EMERGENCY:
+                return "Water / Flood Emergency";
+
+            case CUSTOM:
+                return "Other / Custom";
+
+            default:
+                return "Unknown";
         }
     }
 
-    private String formatPriority(
-            Priority priority) {
-
-        if (priority ==
-                Priority.CRITICAL) {
-
-            return "Critical";
-
-        } else if (priority ==
-                Priority.HIGH) {
-
-            return "High";
-
-        } else if (priority ==
-                Priority.MEDIUM) {
-
-            return "Medium";
-
-        } else {
-
-            return "Low";
-        }
-    }
-
-    private String formatStatus(
-            EmergencyStatus status) {
-
-        if (status ==
-                EmergencyStatus.IN_PROGRESS) {
-
-            return "In Progress";
-
-        } else if (status ==
-                EmergencyStatus.PENDING) {
-
-            return "Pending";
-
-        } else if (status ==
-                EmergencyStatus.ASSIGNED) {
-
-            return "Assigned";
-
-        } else if (status ==
-                EmergencyStatus.RESOLVED) {
-
-            return "Resolved";
-
-        } else {
-
-            return "Cancelled";
-        }
-    }
-
-    private String formatTeamType(
-            enums.TeamType type) {
-
-        if (type ==
-                enums.TeamType.AMBULANCE) {
-
-            return "Ambulance";
-
-        } else if (type ==
-                enums.TeamType.FIRE) {
-
-            return "Fire";
-
-        } else if (type ==
-                enums.TeamType.RESCUE) {
-
-            return "Rescue";
-
-        } else {
-
-            return "Security";
-        }
-    }
-
-    // =========================
-    // Button Styling
-    // =========================
+    // =========================================
+    // PRIMARY BUTTON
+    // =========================================
 
     private void stylePrimaryButton(
             JButton button) {
@@ -899,8 +1393,23 @@ public class TeamAssignmentFrame extends JFrame {
                 )
         );
 
-        button.setFocusPainted(false);
+        button.setFocusPainted(
+                false
+        );
+
+        button.setBorder(
+                BorderFactory.createEmptyBorder(
+                        8,
+                        14,
+                        8,
+                        14
+                )
+        );
     }
+
+    // =========================================
+    // SECONDARY BUTTON
+    // =========================================
 
     private void styleSecondaryButton(
             JButton button) {
@@ -921,6 +1430,17 @@ public class TeamAssignmentFrame extends JFrame {
                 )
         );
 
-        button.setFocusPainted(false);
+        button.setFocusPainted(
+                false
+        );
+
+        button.setBorder(
+                BorderFactory.createEmptyBorder(
+                        8,
+                        14,
+                        8,
+                        14
+                )
+        );
     }
 }
