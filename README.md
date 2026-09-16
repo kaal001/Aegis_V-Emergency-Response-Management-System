@@ -28,6 +28,7 @@ Assigned team becomes AVAILABLE again
 Dashboard and reports are updated
 ```
 
+
 ## Features
 
 ### User
@@ -388,6 +389,18 @@ The project was also packaged as a standalone Windows application using `jpackag
 
 The packaged application can be launched without opening IntelliJ, and the packaged app was tested with the core features and data persistence working after restart.
 
+## Download
+
+### Windows
+
+Download the latest Windows installer from the GitHub Release:
+
+[Download Aegis_V for Windows](../../releases/latest)
+
+> **Note:** This is an unsigned student/portfolio application. Windows SmartScreen may show an "unrecognized app" warning on the first run because the application does not currently have an established publisher reputation.
+
+---
+
 ## Example Workflow
 
 A typical flow looks like this:
@@ -477,30 +490,6 @@ Some improvements I would like to explore in future versions:
 - Automated backups
 - Better automated testing
 
-## Screenshots
-
-Screenshots can be placed in a `screenshots` folder and linked here.
-
-Suggested screenshots:
-
-```text
-Login
-User Dashboard
-Report Emergency
-My Emergencies
-Admin Dashboard
-Emergency Management
-Response Team Management
-Team Assignment
-Emergency History
-Reports / Statistics
-```
-
-Example:
-
-```markdown
-![Login Screen](screenshots/login.png)
-```
 
 ## Project Status
 
